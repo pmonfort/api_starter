@@ -3,13 +3,22 @@
 module Generators
   # Base Generator class
   class Base
-    attr_accessor :raw_params, :resource, :swagger, :validation
+    attr_accessor :raw_params, :resources, :swagger, :validation
 
     def initialize(params)
-      raw_params = params
-      resource = params['resource']
-      swagger = params['swagger']
-      validation = params['validation']
+      self.raw_params = params
+      self.resources = params['resources']
+      self.swagger = params['swagger']
+      self.validation = params['validation']
+    end
+
+    def render_to_string(path, params)
+      html = File.open(path).read
+      ERB.new(html).result_with_hash(params)
+    end
+
+    def create_file(path, content)
+      File.open(path, 'w') { |file| file.write(content) }
     end
   end
 end

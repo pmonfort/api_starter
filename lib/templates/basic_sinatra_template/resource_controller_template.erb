@@ -1,0 +1,33 @@
+# frozen_string_literal: true
+
+require 'sinatra/base'
+
+module API
+  class <%= name %> < Sinatra::Base
+<% if actions.include?('index') %>
+    get '/' do
+      "Products!"
+    end
+<% end %>
+<% if actions.include?('show') %>
+    get '/:id' do
+      "Product!"
+    end
+<% end %>
+<% if actions.include?('create') %>
+    post '/' do
+      "Product Created!"
+    end
+<% end %>
+<% if actions.include?('update') %>
+    put '/' do
+      "Product Updated!"
+    end
+<% end %>
+<% if actions.include?('delete') %>
+    get '/' do
+      "Product Deleted!"
+    end
+<% end %>
+  end
+end

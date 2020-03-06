@@ -17,7 +17,7 @@ describe RaAPI do
   describe 'POST to /' do
     describe 'receive valid params' do
       let(:valid_params) do
-        {
+        ActiveSupport::HashWithIndifferentAccess.new({
           framework: 'RailsAPI',
           swagger: 'true',
           validation: 'true',
@@ -34,10 +34,10 @@ describe RaAPI do
                   password: 'true'
                 }
               ],
-              endpoints: %w[create update delete show index]
+              actions: %w[create update delete show index]
             }
           ]
-        }
+        })
       end
 
       it 'response should be success' do

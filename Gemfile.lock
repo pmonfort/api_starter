@@ -45,9 +45,6 @@ GEM
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
-    racksh (1.0.0)
-      rack (>= 1.0)
-      rack-test (>= 0.5)
     rake (13.0.1)
     regexp_parser (1.7.0)
     require_all (3.0.0)
@@ -93,7 +90,6 @@ DEPENDENCIES
   capybara
   database_cleaner
   rack-test
-  racksh
   rake
   require_all
   rspec

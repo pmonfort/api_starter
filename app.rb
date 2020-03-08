@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 require 'sinatra/base'
+require 'require_all'
+require_all './lib/generators'
 
-# RaAPI APP
-class RaAPI < Sinatra::Base
+# APP
+class App < Sinatra::Base
   get '/' do
-    'Ra API Generator'
+    'Amon Ra API Generator'
   end
 
   post '/' do

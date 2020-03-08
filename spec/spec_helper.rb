@@ -2,10 +2,17 @@
 
 ENV['SINATRA_ENV'] = 'test'
 
-require_relative '../config/environment'
+Bundler.require(:default, ENV['SINATRA_ENV'])
+
 require 'rack/test'
 require 'capybara/rspec'
 require 'capybara/dsl'
+require_all './lib/generators'
+
+ActiveRecord::Base.establish_connection(
+  adapter: 'sqlite3',
+  database: "db/#{ENV['SINATRA_ENV']}.sqlite"
+)
 
 if ActiveRecord::Migrator.needs_migration?
   raise 'Migrations are pending. Run `rake db:migrate SINATRA_ENV=test` to resolve the issue.'

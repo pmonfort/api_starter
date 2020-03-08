@@ -3,7 +3,7 @@
 require_relative 'spec_helper'
 
 def app
-  RaAPI
+  App
 end
 
 shared_examples 'valid request' do
@@ -13,7 +13,7 @@ shared_examples 'valid request' do
   end
 end
 
-describe RaAPI do
+describe App do
   describe 'POST to /' do
     describe 'receive valid params' do
       let(:valid_params) do
@@ -57,6 +57,11 @@ describe RaAPI do
         it_behaves_like 'valid request' do
           let(:generator) { Generators::SinatraBasic }
           let(:params) { updated_params }
+        end
+
+        it '' do
+          generator = Generators::SinatraBasic.new(updated_params)
+          generator.generate
         end
       end
 

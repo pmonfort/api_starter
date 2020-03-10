@@ -3,6 +3,9 @@
 module Generators
   # Base Generator class
   class Base
+    BASE_TARGET_PATH = './tmp/'
+    BASE_TARGET_PS_PATH = File.join(BASE_TARGET_PATH, 'project_structure')
+    
     attr_accessor :raw_params, :resources, :swagger, :validation
 
     def initialize(params)
@@ -19,6 +22,15 @@ module Generators
 
     def create_file(path, content)
       File.open(path, 'w') { |file| file.write(content) }
+    end
+
+    def copy_project_basic_structure(template_path)
+      FileUtils.cp_r(template_path, BASE_TARGET_PATH)
+    end
+
+    def create_resource_file(resource, template_path, target_path)
+      content = render_to_string(template_path, resource)
+      create_file(target_path, content)
     end
   end
 end

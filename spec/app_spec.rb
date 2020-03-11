@@ -96,11 +96,6 @@ describe App do
           let(:generator) { Generators::SinatraBasic }
           let(:params) { updated_params }
         end
-
-        it '' do
-          generator = Generators::SinatraBasic.new(updated_params)
-          generator.generate
-        end
       end
 
       context 'framework Rust' do

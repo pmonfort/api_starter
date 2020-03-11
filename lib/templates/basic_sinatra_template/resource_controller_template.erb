@@ -3,29 +3,29 @@
 require 'sinatra/base'
 
 module API
-  class <%= name %> < Sinatra::Base
+  class <%= name %>Controller < Sinatra::Base
 <% if actions.include?('index') %>
-    get '/' do
+    get '<%= "/#{plural_name}" %>' do
       "Products!"
     end
 <% end %>
 <% if actions.include?('show') %>
-    get '/:id' do
+    get '<%= "/#{plural_name}:id" %>' do
       "Product!"
     end
 <% end %>
 <% if actions.include?('create') %>
-    post '/' do
+    post '<%= "/#{plural_name}" %>' do
       "Product Created!"
     end
 <% end %>
 <% if actions.include?('update') %>
-    put '/' do
+    put '<%= "/#{plural_name}" %>' do
       "Product Updated!"
     end
 <% end %>
 <% if actions.include?('delete') %>
-    get '/' do
+    get '<%= "/#{plural_name}" %>' do
       "Product Deleted!"
     end
 <% end %>

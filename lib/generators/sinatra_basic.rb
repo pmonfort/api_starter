@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require './lib/generators/base'
+require 'active_support/inflector'
 
 module Generators
   # Basic Sinatra API Generator
@@ -10,7 +11,7 @@ module Generators
     def generate
       copy_project_basic_structure(File.join(BASE_TEMPLATE_PATH, 'project_structure'))
       resources.each do |resource|
-        create_controller(resource)
+        create_controller(resource.merge({ plural_name: resource['name'].downcase.pluralize }))
         create_migration(resource)
         create_model(resource)
       end

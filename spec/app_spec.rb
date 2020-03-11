@@ -25,13 +25,51 @@ describe App do
             {
               name: 'User',
               fields: [
+                first_name: {
+                  type: 'string',
+                  required: 'false',
+                  unique: 'false'
+                },
+                last_name: {
+                  type: 'string',
+                  required: 'false',
+                  unique: 'false'
+                },
                 email: {
+                  type: 'email',
                   required: 'true',
                   unique: 'true'
                 },
                 password: {
+                  type: 'password',
                   required: 'true',
                   password: 'true'
+                },
+                age: {
+                  type: 'integer',
+                  required: 'false',
+                  password: 'false'
+                },
+                company_id: {
+                  type: 'foreign_key',
+                  required: 'true',
+                  password: 'true'
+                }
+              ],
+              actions: %w[create update delete show index]
+            },
+            {
+              name: 'Company',
+              fields: [
+                name: {
+                  type: 'string',
+                  required: 'true',
+                  unique: 'true'
+                },
+                web_site: {
+                  type: 'string',
+                  required: 'false',
+                  unique: 'false'
                 }
               ],
               actions: %w[create update delete show index]

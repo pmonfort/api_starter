@@ -3,9 +3,9 @@
 module Generators
   # Base Generator class
   class Base
-    BASE_TARGET_PATH = './tmp/'
+    BASE_TARGET_PATH = File.join('./tmp/', Time.now.utc.strftime("%Y%m%d%H%M%S"))
     BASE_TARGET_PS_PATH = File.join(BASE_TARGET_PATH, 'project_structure')
-    
+
     attr_accessor :raw_params, :resources, :swagger, :validation
 
     def initialize(params)
@@ -13,6 +13,7 @@ module Generators
       self.resources = params['resources']
       self.swagger = params['swagger']
       self.validation = params['validation']
+      Dir.mkdir(BASE_TARGET_PATH) unless File.exist?(BASE_TARGET_PATH)
     end
 
     def render_to_string(path, params)

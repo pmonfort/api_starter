@@ -22,6 +22,7 @@ module Generators
         create_model(resource)
       end
       # TODO Destroy TEMP proyect folder
+      BASE_TARGET_PS_PATH
     end
 
     def create_controller(resource)

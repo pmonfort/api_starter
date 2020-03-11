@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 describe Generators::SinatraBasic do
-  let(:target_path) { Generators::Base::BASE_TARGET_PS_PATH }
   let(:valid_params) do
     ActiveSupport::HashWithIndifferentAccess.new({
       framework: 'RailsAPI',
@@ -64,29 +63,28 @@ describe Generators::SinatraBasic do
     })
   end
 
-  before do
-    generator = Generators::SinatraBasic.new(valid_params)
-    generator.generate
-  end
+  let!(:result_path) { Generators::SinatraBasic.new(valid_params).generate }
 
-  describe 'controllers' do
-    it 'generate files' do
-      expect(File.exist?(File.join(target_path, 'api', 'user_controller.rb'))).to be true
-      expect(File.exist?(File.join(target_path, 'api', 'company_controller.rb'))).to be true
+  context 'valid params' do
+    describe 'controllers' do
+      it 'generate files' do
+        expect(File.exist?(File.join(result_path, 'api', 'user_controller.rb'))).to be true
+        expect(File.exist?(File.join(result_path, 'api', 'company_controller.rb'))).to be true
+      end
     end
-  end
 
-  describe 'Models' do
-    it 'generate files' do
-      expect(File.exist?(File.join(target_path, 'models', 'user.rb'))).to be true
-      expect(File.exist?(File.join(target_path, 'models', 'company.rb'))).to be true
+    describe 'Models' do
+      it 'generate files' do
+        expect(File.exist?(File.join(result_path, 'models', 'user.rb'))).to be true
+        expect(File.exist?(File.join(result_path, 'models', 'company.rb'))).to be true
+      end
     end
-  end
 
-  describe 'Migrations' do
-    xit 'generate files' do
-      expect(File.exist?(File.join(target_path, 'db', 'migrate', 'user_controller.rb'))).to be true
-      expect(File.exist?(File.join(target_path, 'db', 'migrate', 'company_controller.rb'))).to be true
+    describe 'Migrations' do
+      it 'generate files' do
+        expect(Dir.glob(File.join(result_path, 'db', 'migrate', '*_user.rb')).empty?).to be false
+        expect(Dir.glob(File.join(result_path, 'db', 'migrate', '*_company.rb')).empty?).to be false
+      end
     end
   end
 end

@@ -3,7 +3,7 @@
 module Generators
   # Base Generator class
   class Base
-    BASE_TARGET_PATH = File.join('./tmp/', Time.now.utc.strftime("%Y%m%d%H%M%S"))
+    BASE_TARGET_PATH = File.join('./tmp/', Time.now.utc.strftime('%Y%m%d%H%M%S'))
     BASE_TARGET_PS_PATH = File.join(BASE_TARGET_PATH, 'project_structure')
 
     attr_accessor :raw_params, :resources, :swagger, :validation

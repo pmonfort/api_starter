@@ -8,6 +8,7 @@ Dir['./api/**/*.rb'].each do |file|
   require file
 end
 
+# Main Application
 class App < Sinatra::Base
   before do
     content_type :json
@@ -19,6 +20,6 @@ class App < Sinatra::Base
   end
 
   get '/' do
-    p 'Hello2!'
+    p 'Amon Ra API'
   end
 end

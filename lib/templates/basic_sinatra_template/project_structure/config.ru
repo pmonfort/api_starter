@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 # config.ru
-require "./app"
+require './app'
 
 run App

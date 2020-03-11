@@ -9,18 +9,12 @@ module Generators
 
     def generate
       copy_project_basic_structure(File.join(BASE_TEMPLATE_PATH, 'project_structure'))
-      puts '--------------------------------------------------------'
-      puts resources
-      puts '--------------------------------------------------------'
-      puts self.resources
-      puts '--------------------------------------------------------'
-      puts self
-      puts '--------------------------------------------------------'
-      self.resources.each do |resource|
+      resources.each do |resource|
         create_controller(resource)
         create_migration(resource)
         create_model(resource)
       end
+
       # TODO Destroy TEMP proyect folder
       BASE_TARGET_PS_PATH
     end
@@ -29,7 +23,7 @@ module Generators
       file_name = "#{resource['name'].downcase}_controller.rb"
       create_resource_file(
         resource,
-        File.join(BASE_TEMPLATE_PATH, "resource_controller_template.erb"),
+        File.join(BASE_TEMPLATE_PATH, 'resource_controller_template.erb'),
         File.join(BASE_TARGET_PS_PATH, 'api', file_name)
       )
     end
@@ -38,18 +32,17 @@ module Generators
       file_name = "#{resource['name'].downcase}.rb"
       create_resource_file(
         resource,
-        File.join(BASE_TEMPLATE_PATH, "resource_model_template.erb"),
+        File.join(BASE_TEMPLATE_PATH, 'resource_model_template.erb'),
         File.join(BASE_TARGET_PS_PATH, 'models', file_name)
       )
     end
 
     def create_migration(resource)
-      version = Time.now.utc.strftime("%Y%m%d%H%M%S")
-      file_name = "#{version}_#{resource['name'].downcase}.rb"
+      file_name = "#{Time.now.utc.strftime('%Y%m%d%H%M%S')}_#{resource['name'].downcase}.rb"
       create_resource_file(
         resource,
-        File.join(BASE_TEMPLATE_PATH, "resource_migration_template.erb"),
-        File.join(BASE_TARGET_PS_PATH, 'db', 'migrate', file_name),
+        File.join(BASE_TEMPLATE_PATH, 'resource_migration_template.erb'),
+        File.join(BASE_TARGET_PS_PATH, 'db', 'migrate', file_name)
       )
     end
   end

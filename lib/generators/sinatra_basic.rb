@@ -25,48 +25,31 @@ module Generators
     end
 
     def create_controller(resource)
-      content = render_to_string(
-        File.join(BASE_TEMPLATE_PATH, "resource_controller_template.erb"),
-        resource
-      )
-
       file_name = "#{resource['name'].downcase}_controller.rb"
-
-      create_file(
-        File.join(BASE_TARGET_PS_PATH, 'api', file_name),
-        content
+      create_resource_file(
+        resource,
+        File.join(BASE_TEMPLATE_PATH, "resource_controller_template.erb"),
+        File.join(BASE_TARGET_PS_PATH, 'api', file_name)
       )
     end
 
     def create_model(resource)
-      content = render_to_string(
-        File.join(BASE_TEMPLATE_PATH, "resource_model_template.erb"),
-        resource
-      )
-
       file_name = "#{resource['name'].downcase}.rb"
-
-      create_file(
-        File.join(BASE_TARGET_PS_PATH, 'models', file_name),
-        content
+      create_resource_file(
+        resource,
+        File.join(BASE_TEMPLATE_PATH, "resource_model_template.erb"),
+        File.join(BASE_TARGET_PS_PATH, 'models', file_name)
       )
     end
 
     def create_migration(resource)
       version = Time.now.utc.strftime("%Y%m%d%H%M%S")
-      content = render_to_string(
-        File.join(BASE_TEMPLATE_PATH, "resource_migration_template.erb"),
-        resource
-      )
-
       file_name = "#{version}_#{resource['name'].downcase}.rb"
-
-      create_file(
+      create_resource_file(
+        resource,
+        File.join(BASE_TEMPLATE_PATH, "resource_migration_template.erb"),
         File.join(BASE_TARGET_PS_PATH, 'db', 'migrate', file_name),
-        content
       )
     end
-
-
   end
 end

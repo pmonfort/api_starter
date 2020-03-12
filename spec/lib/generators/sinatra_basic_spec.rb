@@ -10,7 +10,7 @@ describe Generators::SinatraBasic do
         resources: [
           {
             name: 'User',
-            fields: [
+            fields: {
               first_name: {
                 type: 'string',
                 required: 'false',
@@ -41,12 +41,12 @@ describe Generators::SinatraBasic do
                 required: 'true',
                 password: 'true'
               }
-            ],
+            },
             actions: %w[create update delete show index]
           },
           {
             name: 'Company',
-            fields: [
+            fields: {
               name: {
                 type: 'string',
                 required: 'true',
@@ -57,7 +57,7 @@ describe Generators::SinatraBasic do
                 required: 'false',
                 unique: 'false'
               }
-            ],
+            },
             actions: %w[create update delete show index]
           }
         ]

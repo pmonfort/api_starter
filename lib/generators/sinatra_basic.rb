@@ -22,6 +22,10 @@ module Generators
 
     def create_controller(resource)
       file_name = "#{resource['name'].downcase}_controller.rb"
+      resource['permited_params'] = resource['fields'].keys.map do |field_name|
+        ":#{field_name}"
+      end.join(', ')
+
       create_resource_file(
         resource,
         File.join(BASE_TEMPLATE_PATH, 'resource_controller_template.erb'),

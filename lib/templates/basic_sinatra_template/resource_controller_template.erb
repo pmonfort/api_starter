@@ -4,29 +4,56 @@ require 'sinatra/base'
 
 module API
   class <%= name %>Controller < Sinatra::Base
+    before do
+      content_type :json
+    end
 <% if actions.include?('index') %>
     get '<%= "/#{plural_name}" %>' do
-      "Products!"
+      <%= "#{name}.all" %>
     end
 <% end %>
 <% if actions.include?('show') %>
     get '<%= "/#{plural_name}:id" %>' do
-      "Product!"
+      <%= "#{name}.find(param[:id])" %>
     end
 <% end %>
 <% if actions.include?('create') %>
     post '<%= "/#{plural_name}" %>' do
-      "Product Created!"
+      if <%= "#{name.downcase}.update(#{name.downcase}_params)" %>
+        status 201
+        { message: '<%= name %> was successfully created.' }
+      else
+        halt 500, json({ message: <%= "#{name.downcase}.errors.full_messages" %> })
+      end
     end
 <% end %>
 <% if actions.include?('update') %>
     put '<%= "/#{plural_name}" %>' do
-      "Product Updated!"
+      if <%= "#{name.downcase}.update(#{name.downcase}_params)" %>
+        { message: '<%= name %> was successfully updated.' }
+      else
+        halt 500, json({ message: <%= "#{name.downcase}.errors.full_messages" %> })
+      end
     end
 <% end %>
 <% if actions.include?('delete') %>
     get '<%= "/#{plural_name}" %>' do
-      "Product Deleted!"
+      <%= "#{name.downcase}.destroy" %>
+      { message: '<%= name %> has been deleted' }
+    end
+<% end %>
+<% if actions & %w[show update delete] %>
+    def <%= name.downcase %>
+      <%= "@#{name.downcase} ||= #{name}.find(param[:id])" %>
+    end
+<% end %>
+<% if actions & %w[update create] %>
+    def <%= "#{name.downcase}_params" %>
+      <%= "params.require(:#{name.downcase}).permit(" %>
+      <% permited_params.split(' ').map do |field_name| %>
+        <%= field_name %>
+      <% end %>
+      )
     end
 <% end %>
   end

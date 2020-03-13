@@ -1,4 +1,22 @@
 # frozen_string_literal: true
 
+# <%= name %> model
 class <%= name %> < ActiveRecord::Base
+<% fields.sort_by! { |f| f['name'] } %>
+<% fields.select { |f| f['type'] == 'foreign_key' }.each do |field| %>
+  <%= "belongs_to :#{field['name'].downcase.gsub!('_id', '')}" %>
+<% end %>
+<% fields.each do |field| %>
+<% field_name = field['name'].downcase%>
+<% field_name.gsub!('_id', '') if field['type'] == 'foreign_key' %>
+<% if field['required'] == 'true' %>
+  <%= "validates :#{field_name}, presence: true" %>
+<% end %>
+<% if field['unique'] == 'true' %>
+  <%= "validates :#{field_name}, uniqueness: true" %>
+<% end %>
+<% if field['type'] == 'email' %>
+  <%= "validates :#{field_name}, format: { with: URI::MailTo::EMAIL_REGEXP }" %>
+<% end %>
+<% end %>
 end

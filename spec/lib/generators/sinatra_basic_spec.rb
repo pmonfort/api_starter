@@ -55,15 +55,13 @@ describe Generators::SinatraBasic do
                 name: 'name',
                 type: 'string',
                 required: 'true',
-                unique: 'true',
-                password: 'false'
+                unique: 'true'
               },
               {
                 name: 'web_site',
                 type: 'string',
                 required: 'false',
-                unique: 'false',
-                password: 'false'
+                unique: 'false'
               }
             ],
             actions: %w[create update show]
@@ -75,50 +73,43 @@ describe Generators::SinatraBasic do
                 name: 'first_name',
                 type: 'string',
                 required: 'false',
-                unique: 'false',
-                password: 'false'
+                unique: 'false'
               },
               {
                 name: 'last_name',
                 type: 'string',
                 required: 'false',
-                unique: 'false',
-                password: 'false'
+                unique: 'false'
               },
               {
                 name: 'email',
                 type: 'email',
                 required: 'true',
-                unique: 'true',
-                password: 'false'
+                unique: 'true'
               },
               {
                 name: 'password',
                 type: 'password',
                 required: 'true',
-                unique: 'false',
-                password: 'true'
+                unique: 'false'
               },
               {
                 name: 'age',
                 type: 'integer',
                 required: 'false',
-                unique: 'false',
-                password: 'false'
+                unique: 'false'
               },
               {
                 name: 'birthday',
                 type: 'datetime',
                 required: 'true',
-                unique: 'false',
-                password: 'false'
+                unique: 'false'
               },
               {
                 name: 'company_id',
                 type: 'foreign_key',
                 required: 'true',
-                unique: 'false',
-                password: 'false'
+                unique: 'false'
               }
             ],
             actions: %w[create update delete show index]
@@ -130,15 +121,13 @@ describe Generators::SinatraBasic do
                 name: 'name',
                 type: 'string',
                 required: 'true',
-                unique: 'true',
-                password: 'false'
+                unique: 'true'
               },
               {
                 name: 'price',
                 type: 'price',
                 required: 'false',
-                unique: 'false',
-                password: 'false'
+                unique: 'false'
               }
             ],
             actions: %w[create update delete show index]

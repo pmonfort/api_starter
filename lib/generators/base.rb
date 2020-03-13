@@ -14,6 +14,7 @@ module Generators
       self.swagger = params['swagger']
       self.validation = params['validation']
       self.migration_counter = 1
+      Dir.mkdir('./tmp') unless File.exist?('./tmp')
       Dir.mkdir(BASE_TARGET_PATH) unless File.exist?(BASE_TARGET_PATH)
     end
 

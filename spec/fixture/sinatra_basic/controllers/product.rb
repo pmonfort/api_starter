@@ -3,7 +3,7 @@
 require './api/base_controller'
 
 module API
-  Product controller
+  # Product controller
   class ProductController < BaseController
     get '/products' do
       Product.all

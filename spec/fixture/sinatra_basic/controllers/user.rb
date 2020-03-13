@@ -3,7 +3,7 @@
 require './api/base_controller'
 
 module API
-  User controller
+  # User controller
   class UserController < BaseController
     get '/users' do
       User.all

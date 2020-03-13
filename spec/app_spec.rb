@@ -6,7 +6,7 @@ def app
   App
 end
 
-shared_examples 'valid request' do
+shared_examples 'valid request' do |actions|
   it 'use the expected generator with the right params' do
     expect(generator).to receive(:new).with(params)
     post '/', params

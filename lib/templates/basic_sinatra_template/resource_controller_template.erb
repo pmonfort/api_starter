@@ -3,6 +3,7 @@
 require './api/base_controller'
 
 module API
+  <%= "#{name} controller" %>
   class <%= name %>Controller < BaseController
 <% if actions.include?('index') %>
     get '<%= "/#{plural_name}" %>' do
@@ -38,7 +39,7 @@ module API
 
 <% end %>
 <% if actions.include?('delete') %>
-    get '<%= "/#{plural_name}" %>' do
+    delete '<%= "/#{plural_name}/:id" %>' do
       <%= "#{name.downcase}.destroy" %>
       { message: '<%= name %> has been deleted' }
     end

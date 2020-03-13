@@ -4,6 +4,7 @@ require 'sinatra/base'
 require 'sinatra/strong-params'
 
 module API
+  # Base controller
   class BaseController < Sinatra::Base
     configure do
       register Sinatra::StrongParams

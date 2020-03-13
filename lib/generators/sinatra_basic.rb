@@ -71,7 +71,7 @@ module Generators
     end
 
     def sp_params_names(hash)
-      "%i[#{hash.map { |field| "#{field['name']}" }.join(' ')}]"
+      "%i[#{hash.map { |field| field['name'] }.join(' ')}]"
     end
   end
 end

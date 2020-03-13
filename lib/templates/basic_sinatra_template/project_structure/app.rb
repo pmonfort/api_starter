@@ -5,12 +5,12 @@ require 'sinatra/activerecord'
 require 'active_support/inflector'
 
 # Require API ControllersWW
-Dir['./api/**/*.rb'].each do |file|
+Dir['./api/**/*.rb'].sort.each do |file|
   require file
 end
 
 # Require Models
-Dir['./models/**/*.rb'].each do |file|
+Dir['./models/**/*.rb'].sort.each do |file|
   require file
 end
 

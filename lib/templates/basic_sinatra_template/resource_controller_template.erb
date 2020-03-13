@@ -1,24 +1,23 @@
 # frozen_string_literal: true
 
-require 'sinatra/base'
+require './api/base_controller'
 
 module API
-  class <%= name %>Controller < Sinatra::Base
-    before do
-      content_type :json
-    end
+  class <%= name %>Controller < BaseController
 <% if actions.include?('index') %>
     get '<%= "/#{plural_name}" %>' do
       <%= "#{name}.all" %>
     end
+
 <% end %>
 <% if actions.include?('show') %>
-    get '<%= "/#{plural_name}:id" %>' do
-      <%= "#{name}.find(param[:id])" %>
+    get '<%= "/#{plural_name}/:id" %>' do
+      <%= name.downcase %>
     end
+
 <% end %>
 <% if actions.include?('create') %>
-    post '<%= "/#{plural_name}" %>' do
+    post '<%= "/#{plural_name}'#{create_method_strong_parameters}" %> do
       if <%= "#{name.downcase}.update(#{name.downcase}_params)" %>
         status 201
         { message: '<%= name %> was successfully created.' }
@@ -26,34 +25,28 @@ module API
         halt 500, json({ message: <%= "#{name.downcase}.errors.full_messages" %> })
       end
     end
+
 <% end %>
 <% if actions.include?('update') %>
-    put '<%= "/#{plural_name}" %>' do
+    put '<%= "/#{plural_name}/:id'#{update_allows_strong_parameters}" %> do
       if <%= "#{name.downcase}.update(#{name.downcase}_params)" %>
         { message: '<%= name %> was successfully updated.' }
       else
         halt 500, json({ message: <%= "#{name.downcase}.errors.full_messages" %> })
       end
     end
+
 <% end %>
 <% if actions.include?('delete') %>
     get '<%= "/#{plural_name}" %>' do
       <%= "#{name.downcase}.destroy" %>
       { message: '<%= name %> has been deleted' }
     end
+
 <% end %>
 <% if actions & %w[show update delete] %>
     def <%= name.downcase %>
-      <%= "@#{name.downcase} ||= #{name}.find(param[:id])" %>
-    end
-<% end %>
-<% if actions & %w[update create] %>
-    def <%= "#{name.downcase}_params" %>
-      <%= "params.require(:#{name.downcase}).permit(" %>
-      <% permited_params.split(' ').map do |field_name| %>
-        <%= field_name %>
-      <% end %>
-      )
+      <%= "@#{name.downcase} ||= #{name}.find(params[:id])" %>
     end
 <% end %>
   end

@@ -9,55 +9,98 @@ describe Generators::SinatraBasic do
         validation: 'true',
         resources: [
           {
-            name: 'User',
-            fields: {
-              first_name: {
+            name: 'Company',
+            fields: [
+              {
+                name: 'name',
                 type: 'string',
-                required: 'false',
-                unique: 'false'
-              },
-              last_name: {
-                type: 'string',
-                required: 'false',
-                unique: 'false'
-              },
-              email: {
-                type: 'email',
                 required: 'true',
-                unique: 'true'
-              },
-              password: {
-                type: 'password',
-                required: 'true',
-                password: 'true'
-              },
-              age: {
-                type: 'integer',
-                required: 'false',
+                unique: 'true',
                 password: 'false'
               },
-              company_id: {
+              {
+                name: 'web_site',
+                type: 'string',
+                required: 'false',
+                unique: 'false',
+                password: 'false'
+              }
+            ],
+            actions: %w[create update show]
+          },
+          {
+            name: 'User',
+            fields: [
+              {
+                name: 'first_name',
+                type: 'string',
+                required: 'false',
+                unique: 'false',
+                password: 'false'
+              },
+              {
+                name: 'last_name',
+                type: 'string',
+                required: 'false',
+                unique: 'false',
+                password: 'false'
+              },
+              {
+                name: 'email',
+                type: 'email',
+                required: 'true',
+                unique: 'true',
+                password: 'false'
+              },
+              {
+                name: 'password',
+                type: 'password',
+                required: 'true',
+                unique: 'false',
+                password: 'true'
+              },
+              {
+                name: 'age',
+                type: 'integer',
+                required: 'false',
+                unique: 'false',
+                password: 'false'
+              },
+              {
+                name: 'birthday',
+                type: 'datetime',
+                required: 'true',
+                unique: 'false',
+                password: 'false'
+              },
+              {
+                name: 'company_id',
                 type: 'foreign_key',
                 required: 'true',
-                password: 'true'
+                unique: 'false',
+                password: 'false'
               }
-            },
+            ],
             actions: %w[create update delete show index]
           },
           {
-            name: 'Company',
-            fields: {
-              name: {
+            name: 'Product',
+            fields: [
+              {
+                name: 'name',
                 type: 'string',
                 required: 'true',
-                unique: 'true'
+                unique: 'true',
+                password: 'false'
               },
-              web_site: {
-                type: 'string',
+              {
+                name: 'price',
+                type: 'price',
                 required: 'false',
-                unique: 'false'
+                unique: 'false',
+                password: 'false'
               }
-            },
+            ],
             actions: %w[create update delete show index]
           }
         ]

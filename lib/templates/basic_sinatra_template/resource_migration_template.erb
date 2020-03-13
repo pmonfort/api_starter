@@ -1,6 +1,27 @@
 # frozen_string_literal: true
 
-class <%= name %> < ActiveRecord::Migration
+class <%= "Create#{name}" %> < ActiveRecord::Migration[6.0]
   def change
+    create_table <%= ":#{plural_name}" %> do |t|
+<% fields.each do |field| %>
+<% if field['type'] == 'password' %>
+      <%= "t.string :#{field['name'].downcase}, null: false" %>
+<% elsif field['type'] == 'foreign_key' %>
+      <%= "t.references :#{field['name'].downcase.gsub('_id', '')}, foreign_key: true" %>
+<% elsif field['type'] == 'price' %>
+      <%= "t.decimal :#{field['name'].downcase}, precision: 8, scale: 2#{field['required'] == 'true' ? ', null: false' : ''}" %>
+<% elsif field['type'] == 'email' %>
+      <%= "t.string :#{field['name'].downcase}#{field['required'] == 'true' ? ', null: false' : ''}" %>
+<% else %>
+      <%= "t.#{field['type']} :#{field['name'].downcase}#{field['required'] == 'true' ? ', null: false' : ''}" %>
+<% end %>
+<% end %>
+
+      t.timestamps
+    end
+
+<% fields.select { |field| field['unique'] == 'true' }.each do |field| %>
+    <%= "add_index :#{plural_name}, :#{field['name']}, unique: true" %>
+<% end %>
   end
 end

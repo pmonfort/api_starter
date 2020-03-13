@@ -29,6 +29,17 @@ shared_examples 'generated controller' do |actions|
   end
 end
 
+shared_examples 'generated file' do |type|
+  let(:file_content) { File.open(generated_file_path).read }
+  let(:expected_content) do
+    File.open(File.join('./spec/fixture/sinatra_basic/', file_path)).read
+  end
+
+  it "generate the right #{type}" do
+    expect(file_content).to eq(expected_content)
+  end
+end
+
 describe Generators::SinatraBasic do
   let(:valid_params) do
     ActiveSupport::HashWithIndifferentAccess.new(
@@ -141,10 +152,14 @@ describe Generators::SinatraBasic do
 
   context 'valid params' do
     describe 'controllers' do
+      let(:generated_product_controller) { File.join(result_path, 'api', 'product_controller.rb') }
+      let(:generated_company_controller) { File.join(result_path, 'api', 'company_controller.rb') }
+      let(:generated_user_controller) { File.join(result_path, 'api', 'user_controller.rb') }
+
       it 'generate files' do
-        expect(File.exist?(File.join(result_path, 'api', 'user_controller.rb'))).to be true
-        expect(File.exist?(File.join(result_path, 'api', 'company_controller.rb'))).to be true
-        expect(File.exist?(File.join(result_path, 'api', 'product_controller.rb'))).to be true
+        expect(File.exist?(generated_product_controller)).to be true
+        expect(File.exist?(generated_company_controller)).to be true
+        expect(File.exist?(generated_user_controller)).to be true
       end
 
       context 'params only require create, update and show' do
@@ -180,21 +195,80 @@ describe Generators::SinatraBasic do
           let(:plural_name) { 'users' }
         end
       end
+
+      it_behaves_like 'generated file', 'controller' do
+        let(:generated_file_path) { generated_product_controller }
+        let(:file_path) { 'controllers/product.rb' }
+      end
+
+      it_behaves_like 'generated file', 'controller' do
+        let(:generated_file_path) { generated_company_controller }
+        let(:file_path) { 'controllers/company.rb' }
+      end
+
+      it_behaves_like 'generated file', 'controller' do
+        let(:generated_file_path) { generated_user_controller }
+        let(:file_path) { 'controllers/user.rb' }
+      end
     end
 
     describe 'Models' do
+      let(:generated_product_model) { File.join(result_path, 'models', 'product.rb') }
+      let(:generated_company_model) { File.join(result_path, 'models', 'company.rb') }
+      let(:generated_user_model) { File.join(result_path, 'models', 'user.rb') }
+
       it 'generate files' do
-        expect(File.exist?(File.join(result_path, 'models', 'user.rb'))).to be true
-        expect(File.exist?(File.join(result_path, 'models', 'company.rb'))).to be true
-        expect(File.exist?(File.join(result_path, 'models', 'product.rb'))).to be true
+        expect(File.exist?(generated_product_model)).to be true
+        expect(File.exist?(generated_company_model)).to be true
+        expect(File.exist?(generated_user_model)).to be true
+      end
+
+      it_behaves_like 'generated file', 'model' do
+        let(:generated_file_path) { generated_product_model }
+        let(:file_path) { 'models/product.rb' }
+      end
+
+      it_behaves_like 'generated file', 'model' do
+        let(:generated_file_path) { generated_company_model }
+        let(:file_path) { 'models/company.rb' }
+      end
+
+      it_behaves_like 'generated file', 'model' do
+        let(:generated_file_path) { generated_user_model }
+        let(:file_path) { 'models/user.rb' }
       end
     end
 
     describe 'Migrations' do
+      let(:generated_product_migration) do
+        Dir.glob(File.join(result_path, 'db', 'migrate', '*_product.rb')).first
+      end
+      let(:generated_company_migration) do
+        Dir.glob(File.join(result_path, 'db', 'migrate', '*_company.rb')).first
+      end
+      let(:generated_user_migration) do
+        Dir.glob(File.join(result_path, 'db', 'migrate', '*_user.rb')).first
+      end
+
       it 'generate files' do
-        expect(Dir.glob(File.join(result_path, 'db', 'migrate', '*_user.rb')).empty?).to be false
-        expect(Dir.glob(File.join(result_path, 'db', 'migrate', '*_company.rb')).empty?).to be false
-        expect(Dir.glob(File.join(result_path, 'db', 'migrate', '*_product.rb')).empty?).to be false
+        expect(File.exist?(generated_product_migration)).to be true
+        expect(File.exist?(generated_company_migration)).to be true
+        expect(File.exist?(generated_user_migration)).to be true
+      end
+
+      it_behaves_like 'generated file', 'migration' do
+        let(:generated_file_path) { generated_product_migration }
+        let(:file_path) { 'migrations/create_product.rb' }
+      end
+
+      it_behaves_like 'generated file', 'migration' do
+        let(:generated_file_path) { generated_company_migration }
+        let(:file_path) { 'migrations/create_company.rb' }
+      end
+
+      it_behaves_like 'generated file', 'migration' do
+        let(:generated_file_path) { generated_user_migration }
+        let(:file_path) { 'migrations/create_user.rb' }
       end
     end
   end

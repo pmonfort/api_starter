@@ -1,0 +1,46 @@
+# frozen_string_literal: true
+
+require_relative 'spec_helper'
+
+describe 'APPLICATION' do
+  it 'responds with a welcome message' do
+    get '/users'
+    expect(last_response.status).to eq(200)
+    #expect(last_response.body).to include('Welcome to the Sinatra Template!')
+  end
+
+  describe 'POST to /' do
+    describe 'receive valid params' do
+      let(:valid_params) do
+        {
+          framework: 'Rails',
+          swagger: true,
+          validation: true,
+          resources: [
+            {
+              name: 'User',
+              fields: [
+                email: {
+                  required: true,
+                  unique: true
+                },
+                password: {
+                  required: true,
+                  password: true
+                }
+              ],
+              endpoints: [
+                :create, :update, :delete, :show, :index
+              ]
+            }
+          ]
+        }
+      end
+
+      it 'response should be success' do
+        post '/products', valid_params
+        expect(last_response.status).to eq(200)
+      end
+    end
+  end
+end

@@ -8,7 +8,7 @@ class <%= "Create#{name}" %> < ActiveRecord::Migration[6.0]
 <% if field['type'] == 'password' %>
       <%= "t.string :#{field['name'].downcase}, null: false" %>
 <% elsif field['type'] == 'foreign_key' %>
-      <%= "t.references :#{field['name'].downcase.gsub('_id', '')}, foreign_key: true" %>
+      <%= "t.references :#{field['name'].downcase.gsub('_id', '')}#{field['required'] == 'true' ? ', null: false' : ''}, foreign_key: true" %>
 <% elsif field['type'] == 'price' %>
       <%= "t.decimal :#{field['name'].downcase}, precision: 8, scale: 2#{field['required'] == 'true' ? ', null: false' : ''}" %>
 <% elsif field['type'] == 'email' %>

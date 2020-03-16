@@ -10,7 +10,7 @@ class CreateUser < ActiveRecord::Migration[6.0]
       t.string :password, null: false
       t.integer :age
       t.datetime :birthday, null: false
-      t.references :company, foreign_key: true
+      t.references :company, null: false, foreign_key: true
 
       t.timestamps
     end

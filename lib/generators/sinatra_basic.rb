@@ -22,7 +22,7 @@ module Generators
     end
 
     def create_controller(resource)
-      file_name = "#{resource['name'].downcase}_controller.rb"
+      file_name = "#{resource['plural_name']}_controller.rb"
       resource.merge!(strong_parameters(resource))
 
       create_resource_file(
@@ -44,7 +44,7 @@ module Generators
     def create_migration(resource)
       self.migration_counter += 1
       version = (Time.now.utc + self.migration_counter).strftime('%Y%m%d%H%M%S')
-      file_name = "#{version}_create_#{resource['name'].downcase}.rb"
+      file_name = "#{version}_create_#{resource['plural_name'].downcase}.rb"
       create_resource_file(
         resource,
         File.join(BASE_TEMPLATE_PATH, 'resource_migration_template.erb'),

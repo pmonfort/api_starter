@@ -141,9 +141,9 @@ describe Generators::SinatraBasic do
 
   context 'valid params' do
     describe 'controllers' do
-      let(:generated_product_controller) { File.join(result_path, 'api', 'product_controller.rb') }
-      let(:generated_company_controller) { File.join(result_path, 'api', 'company_controller.rb') }
-      let(:generated_user_controller) { File.join(result_path, 'api', 'user_controller.rb') }
+      let(:generated_product_controller) { File.join(result_path, 'api', 'products_controller.rb') }
+      let(:generated_company_controller) { File.join(result_path, 'api', 'companies_controller.rb') }
+      let(:generated_user_controller) { File.join(result_path, 'api', 'users_controller.rb') }
 
       it 'generate files' do
         expect(File.exist?(generated_product_controller)).to be true
@@ -156,7 +156,7 @@ describe Generators::SinatraBasic do
           create: true, update: true, delete: false, index: false, show: true
         } do
           let(:controller_file_path) do
-            File.open(File.join(result_path, 'api', 'company_controller.rb'))
+            File.open(File.join(result_path, 'api', 'companies_controller.rb'))
           end
           let(:create_method_strong_parameters) do
             'allows: %i[web_site], needs: %i[name]'
@@ -173,7 +173,7 @@ describe Generators::SinatraBasic do
           create: true, update: true, delete: true, index: true, show: true
         } do
           let(:controller_file_path) do
-            File.open(File.join(result_path, 'api', 'user_controller.rb'))
+            File.open(File.join(result_path, 'api', 'users_controller.rb'))
           end
           let(:create_method_strong_parameters) do
             'allows: %i[first_name last_name age], needs: %i[email password birthday company_id]'
@@ -187,17 +187,17 @@ describe Generators::SinatraBasic do
 
       it_behaves_like 'generated file', 'controller' do
         let(:generated_file_path) { generated_product_controller }
-        let(:file_path) { 'controllers/product.rb' }
+        let(:file_path) { 'controllers/products.rb' }
       end
 
       it_behaves_like 'generated file', 'controller' do
         let(:generated_file_path) { generated_company_controller }
-        let(:file_path) { 'controllers/company.rb' }
+        let(:file_path) { 'controllers/companies.rb' }
       end
 
       it_behaves_like 'generated file', 'controller' do
         let(:generated_file_path) { generated_user_controller }
-        let(:file_path) { 'controllers/user.rb' }
+        let(:file_path) { 'controllers/users.rb' }
       end
     end
 
@@ -230,13 +230,13 @@ describe Generators::SinatraBasic do
 
     describe 'Migrations' do
       let(:generated_product_migration) do
-        Dir.glob(File.join(result_path, 'db', 'migrate', '*_product.rb')).first
+        Dir.glob(File.join(result_path, 'db', 'migrate', '*_products.rb')).first
       end
       let(:generated_company_migration) do
-        Dir.glob(File.join(result_path, 'db', 'migrate', '*_company.rb')).first
+        Dir.glob(File.join(result_path, 'db', 'migrate', '*_companies.rb')).first
       end
       let(:generated_user_migration) do
-        Dir.glob(File.join(result_path, 'db', 'migrate', '*_user.rb')).first
+        Dir.glob(File.join(result_path, 'db', 'migrate', '*_users.rb')).first
       end
 
       it 'generate files' do
@@ -247,17 +247,17 @@ describe Generators::SinatraBasic do
 
       it_behaves_like 'generated file', 'migration' do
         let(:generated_file_path) { generated_product_migration }
-        let(:file_path) { 'migrations/create_product.rb' }
+        let(:file_path) { 'migrations/create_products.rb' }
       end
 
       it_behaves_like 'generated file', 'migration' do
         let(:generated_file_path) { generated_company_migration }
-        let(:file_path) { 'migrations/create_company.rb' }
+        let(:file_path) { 'migrations/create_companies.rb' }
       end
 
       it_behaves_like 'generated file', 'migration' do
         let(:generated_file_path) { generated_user_migration }
-        let(:file_path) { 'migrations/create_user.rb' }
+        let(:file_path) { 'migrations/create_users.rb' }
       end
     end
   end

@@ -3,8 +3,7 @@
 require './api/base_controller'
 
 module API
-  # User controller
-  class UserController < BaseController
+  class UsersController < BaseController
     get '/users' do
       User.all
     end

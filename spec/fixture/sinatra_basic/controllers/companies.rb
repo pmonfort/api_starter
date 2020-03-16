@@ -3,8 +3,7 @@
 require './api/base_controller'
 
 module API
-  # Company controller
-  class CompanyController < BaseController
+  class CompaniesController < BaseController
     get '/companies/:id' do
       company
     end

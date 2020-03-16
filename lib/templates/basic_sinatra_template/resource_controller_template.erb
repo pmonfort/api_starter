@@ -3,8 +3,7 @@
 require './api/base_controller'
 
 module API
-  # <%= name %> controller
-  class <%= name %>Controller < BaseController
+  class <%= plural_name.capitalize %>Controller < BaseController
 <% if actions.include?('index') %>
     get '<%= "/#{plural_name}" %>' do
       <%= "#{name}.all" %>

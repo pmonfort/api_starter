@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# <%= name %> model
 class <%= name %> < ActiveRecord::Base
 <% fields.sort_by! { |f| f['name'] } %>
 <% fields.select { |f| f['type'] == 'foreign_key' }.each do |field| %>

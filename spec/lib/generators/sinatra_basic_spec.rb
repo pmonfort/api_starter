@@ -44,7 +44,7 @@ describe Generators::SinatraBasic do
   let(:valid_params) do
     ActiveSupport::HashWithIndifferentAccess.new(
       {
-        framework: 'RailsAPI',
+        framework: 'SinatraBasic',
         swagger: 'true',
         validation: 'true',
         resources: [

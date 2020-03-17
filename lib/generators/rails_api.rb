@@ -19,7 +19,7 @@ module Generators
         create_model(resource)
       end
 
-      BASE_TARGET_PS_PATH
+      base_target_ps_path
     end
 
     def create_controller(resource)
@@ -29,7 +29,7 @@ module Generators
       create_resource_file(
         resource,
         File.join(BASE_TEMPLATE_PATH, 'resource_controller_template.erb'),
-        File.join(BASE_TARGET_PS_PATH, 'app', 'controllers', file_name)
+        File.join(base_target_ps_path, 'app', 'controllers', file_name)
       )
     end
 
@@ -38,7 +38,7 @@ module Generators
       create_resource_file(
         resource,
         File.join(BASE_TEMPLATE_PATH, 'resource_model_template.erb'),
-        File.join(BASE_TARGET_PS_PATH, 'app', 'models', file_name)
+        File.join(base_target_ps_path, 'app', 'models', file_name)
       )
     end
 
@@ -49,7 +49,7 @@ module Generators
       create_resource_file(
         resource,
         File.join(BASE_TEMPLATE_PATH, 'resource_migration_template.erb'),
-        File.join(BASE_TARGET_PS_PATH, 'db', 'migrate', file_name)
+        File.join(base_target_ps_path, 'db', 'migrate', file_name)
       )
     end
   end

@@ -4,16 +4,8 @@ ENV['SINATRA_ENV'] = 'test'
 
 Bundler.require(:default, ENV['SINATRA_ENV'])
 
+require 'faker'
 require 'rack/test'
-
-ActiveRecord::Base.establish_connection(
-  adapter: 'sqlite3',
-  database: "db/#{ENV['SINATRA_ENV']}.sqlite"
-)
-
-if ActiveRecord::Migrator.needs_migration?
-  raise 'Migrations are pending. Run `rake db:migrate SINATRA_ENV=test` to resolve the issue.'
-end
 
 ActiveRecord::Base.logger = nil
 

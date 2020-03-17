@@ -3,9 +3,6 @@
 module Generators
   # Base Generator class
   class Base
-    BASE_TARGET_PATH = File.join('./tmp/', Time.now.utc.strftime('%Y%m%d%H%M%S'))
-    BASE_TARGET_PS_PATH = File.join(BASE_TARGET_PATH, 'project_structure')
-
     attr_accessor :raw_params, :resources, :swagger, :validation, :migration_counter
 
     def initialize(params)
@@ -15,7 +12,7 @@ module Generators
       self.validation = params['validation']
       self.migration_counter = 1
       Dir.mkdir('./tmp') unless File.exist?('./tmp')
-      Dir.mkdir(BASE_TARGET_PATH) unless File.exist?(BASE_TARGET_PATH)
+      Dir.mkdir(base_target_path) unless File.exist?(base_target_path)
     end
 
     def render_to_string(path, params)
@@ -27,12 +24,22 @@ module Generators
     end
 
     def copy_project_basic_structure(template_path)
-      FileUtils.cp_r(template_path, BASE_TARGET_PATH)
+      FileUtils.cp_r(template_path, base_target_path)
     end
 
     def create_resource_file(resource, template_path, target_path)
       content = render_to_string(template_path, resource)
       create_file(target_path, content)
+    end
+
+    def base_target_path
+      @base_target_path ||= File.join(
+        './tmp/', "#{Time.now.utc.strftime('%Y%m%d%H%M%S')}_#{self.raw_params['framework']}"
+      )
+    end
+
+    def base_target_ps_path
+      File.join(base_target_path, 'project_structure')
     end
   end
 end

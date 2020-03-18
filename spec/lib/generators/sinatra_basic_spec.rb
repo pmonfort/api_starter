@@ -260,5 +260,38 @@ describe Generators::SinatraBasic do
         let(:file_path) { 'migrations/create_users.rb' }
       end
     end
+
+    describe 'Factories' do
+      let(:generated_product_factory) do
+        Dir.glob(File.join(result_path, 'spec', 'factories', 'products.rb')).first
+      end
+      let(:generated_company_factory) do
+        Dir.glob(File.join(result_path, 'spec', 'factories', 'companies.rb')).first
+      end
+      let(:generated_user_factory) do
+        Dir.glob(File.join(result_path, 'spec', 'factories', 'users.rb')).first
+      end
+
+      it 'generate files' do
+        expect(File.exist?(generated_product_factory)).to be true
+        expect(File.exist?(generated_company_factory)).to be true
+        expect(File.exist?(generated_user_factory)).to be true
+      end
+
+      it_behaves_like 'generated file', 'migration' do
+        let(:generated_file_path) { generated_product_factory }
+        let(:file_path) { 'factories/products.rb' }
+      end
+
+      it_behaves_like 'generated file', 'migration' do
+        let(:generated_file_path) { generated_company_factory }
+        let(:file_path) { 'factories/companies.rb' }
+      end
+
+      it_behaves_like 'generated file', 'migration' do
+        let(:generated_file_path) { generated_user_factory }
+        let(:file_path) { 'factories/users.rb' }
+      end
+    end
   end
 end

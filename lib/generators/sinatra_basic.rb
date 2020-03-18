@@ -11,10 +11,11 @@ module Generators
     def generate
       copy_project_basic_structure(File.join(BASE_TEMPLATE_PATH, 'project_structure'))
       resources.each do |resource|
-        plural_name = resource['name'].downcase.pluralize
-        create_controller(resource.merge({ plural_name: plural_name }))
-        create_migration(resource.merge({ plural_name: plural_name }))
+        resource.merge!({ plural_name: resource['name'].downcase.pluralize })
+        create_controller(resource)
+        create_migration(resource)
         create_model(resource)
+        create_factories(resource)
       end
 
       base_target_ps_path
@@ -71,6 +72,24 @@ module Generators
 
     def sp_params_names(hash)
       "%i[#{hash.map { |field| field['name'] }.join(' ')}]"
+    end
+
+    # Factories
+    def create_factories(resource)
+      file_name = "#{resource['plural_name'].downcase}.rb"
+
+      # TODO WORKING PROGRESS
+      create_resource_file(
+        resource,
+        File.join(BASE_TEMPLATE_PATH, 'resource_factory_template.erb'),
+        File.join(base_target_ps_path, 'spec', 'factories', file_name)
+      ) do |field|
+        "#{field['name']} { #{faker(field['type'])} }"
+      end
+    end
+
+    def faker(type)
+      "Faker.   !!! #{type}"
     end
   end
 end

@@ -83,13 +83,35 @@ module Generators
         resource,
         File.join(BASE_TEMPLATE_PATH, 'resource_factory_template.erb'),
         File.join(base_target_ps_path, 'spec', 'factories', file_name)
-      ) do |field|
-        "#{field['name']} { #{faker(field['type'])} }"
-      end
+      ) { |field| faker(field) }
     end
 
-    def faker(type)
-      "Faker.   !!! #{type}"
+    def faker(field)
+      result = "#{field['name']} "
+      case field['type']
+      when 'string'
+        # If the field name as the string name
+        # it would assign a Faker name
+        result += if field['name'].match(/name/)
+                    '{ Faker::Name.name }'
+                  else
+                    '{ Faker::Lorem.sentence }'
+                  end
+      when 'email'
+        result += '{ Faker::Internet.email }'
+      when 'password'
+        result += '{ Faker::Internet.password }'
+      when 'integer'
+        result += '{ Faker::Number.number(digits: 2) }'
+      when 'price'
+        result += '{ Faker::Number.decimal(l_digits: 2) }'
+      when 'datetime'
+        result += '{ Faker::Date.birthday(min_age: 18, max_age: 65) }'
+      when 'foreign_key'
+        field_name = field['name'].gsub('_id', '')
+        result = "#{field_name} { create(:#{field_name}) }"
+      end
+      result
     end
   end
 end

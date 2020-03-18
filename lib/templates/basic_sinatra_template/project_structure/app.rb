@@ -4,7 +4,7 @@ require 'sinatra'
 require 'sinatra/activerecord'
 require 'active_support/inflector'
 
-# Require API ControllersWW
+# Require API Controllers
 Dir['./api/**/*.rb'].sort.each do |file|
   require file
 end

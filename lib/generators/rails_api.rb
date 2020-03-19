@@ -7,6 +7,7 @@ module Generators
 
     def generate
       copy_project_basic_structure(File.join(BASE_TEMPLATE_PATH, 'project_structure'))
+      create_routes
       resources.each do |resource|
         resource.merge!({ plural_name: resource['name'].downcase.pluralize })
         index_of_delete = resource['actions'].find_index('delete')
@@ -23,11 +24,19 @@ module Generators
       base_target_ps_path
     end
 
+    def create_routes
+      create_file_from_template(
+        { resources: resources },
+        File.join(BASE_TEMPLATE_PATH, 'routes_template.erb'),
+        File.join(base_target_ps_path, 'config', 'routes.rb')
+      )
+    end
+
     def create_controller(resource)
       file_name = "#{resource['plural_name']}_controller.rb"
       resource['name_downcase'] = resource['name'].downcase
 
-      create_resource_file(
+      create_file_from_template(
         resource,
         File.join(BASE_TEMPLATE_PATH, 'resource_controller_template.erb'),
         File.join(base_target_ps_path, 'app', 'controllers', file_name)
@@ -36,7 +45,7 @@ module Generators
 
     def create_model(resource)
       file_name = "#{resource['name'].downcase}.rb"
-      create_resource_file(
+      create_file_from_template(
         resource,
         File.join(BASE_TEMPLATE_PATH, 'resource_model_template.erb'),
         File.join(base_target_ps_path, 'app', 'models', file_name)
@@ -47,7 +56,7 @@ module Generators
       self.migration_counter += 1
       version = (Time.now.utc + self.migration_counter).strftime('%Y%m%d%H%M%S')
       file_name = "#{version}_create_#{resource['plural_name'].downcase}.rb"
-      create_resource_file(
+      create_file_from_template(
         resource,
         File.join(BASE_TEMPLATE_PATH, 'resource_migration_template.erb'),
         File.join(base_target_ps_path, 'db', 'migrate', file_name)
@@ -59,7 +68,7 @@ module Generators
       file_name = "#{resource['plural_name'].downcase}.rb"
 
       # TODO WORKING PROGRESS
-      create_resource_file(
+      create_file_from_template(
         resource,
         File.join(BASE_TEMPLATE_PATH, 'resource_factory_template.erb'),
         File.join(base_target_ps_path, 'spec', 'factories', file_name)

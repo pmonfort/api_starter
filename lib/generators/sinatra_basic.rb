@@ -25,7 +25,7 @@ module Generators
       file_name = "#{resource['plural_name']}_controller.rb"
       resource.merge!(strong_parameters(resource))
 
-      create_resource_file(
+      create_file_from_template(
         resource,
         File.join(BASE_TEMPLATE_PATH, 'resource_controller_template.erb'),
         File.join(base_target_ps_path, 'api', file_name)
@@ -34,7 +34,7 @@ module Generators
 
     def create_model(resource)
       file_name = "#{resource['name'].downcase}.rb"
-      create_resource_file(
+      create_file_from_template(
         resource,
         File.join(BASE_TEMPLATE_PATH, 'resource_model_template.erb'),
         File.join(base_target_ps_path, 'models', file_name)
@@ -45,7 +45,7 @@ module Generators
       self.migration_counter += 1
       version = (Time.now.utc + self.migration_counter).strftime('%Y%m%d%H%M%S')
       file_name = "#{version}_create_#{resource['plural_name'].downcase}.rb"
-      create_resource_file(
+      create_file_from_template(
         resource,
         File.join(BASE_TEMPLATE_PATH, 'resource_migration_template.erb'),
         File.join(base_target_ps_path, 'db', 'migrate', file_name)
@@ -79,7 +79,7 @@ module Generators
       file_name = "#{resource['plural_name'].downcase}.rb"
 
       # TODO WORKING PROGRESS
-      create_resource_file(
+      create_file_from_template(
         resource,
         File.join(BASE_TEMPLATE_PATH, 'resource_factory_template.erb'),
         File.join(base_target_ps_path, 'spec', 'factories', file_name)

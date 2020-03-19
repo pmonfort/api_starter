@@ -23,14 +23,14 @@ module Generators
       FileUtils.cp_r(template_path, base_target_path)
     end
 
-    def create_resource_file(resource, template_path, target_path)
+    def create_file_from_template(file_params, template_path, target_path)
       template = Tilt.new(template_path)
       content = if block_given?
-                  template.render(nil, resource) do |params|
+                  template.render(nil, file_params) do |params|
                     yield(params)
                   end
                 else
-                  template.render(nil, resource)
+                  template.render(nil, file_params)
                 end
       create_file(target_path, content)
     end

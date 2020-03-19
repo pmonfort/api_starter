@@ -263,13 +263,13 @@ describe Generators::SinatraBasic do
 
     describe 'Factories' do
       let(:generated_product_factory) do
-        Dir.glob(File.join(result_path, 'spec', 'factories', 'products.rb')).first
+        File.join(result_path, 'spec', 'factories', 'products.rb')
       end
       let(:generated_company_factory) do
-        Dir.glob(File.join(result_path, 'spec', 'factories', 'companies.rb')).first
+        File.join(result_path, 'spec', 'factories', 'companies.rb')
       end
       let(:generated_user_factory) do
-        Dir.glob(File.join(result_path, 'spec', 'factories', 'users.rb')).first
+        File.join(result_path, 'spec', 'factories', 'users.rb')
       end
 
       it 'generate files' do

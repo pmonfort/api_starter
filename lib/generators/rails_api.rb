@@ -27,7 +27,7 @@ module Generators
     def create_routes
       create_file_from_template(
         { resources: resources },
-        File.join(BASE_TEMPLATE_PATH, 'routes_template.erb'),
+        File.join(BASE_TEMPLATE_PATH, 'routes.erb'),
         File.join(base_target_ps_path, 'config', 'routes.rb')
       )
     end
@@ -38,7 +38,7 @@ module Generators
 
       create_file_from_template(
         resource,
-        File.join(BASE_TEMPLATE_PATH, 'resource_controller_template.erb'),
+        File.join(BASE_TEMPLATE_PATH, 'controller.erb'),
         File.join(base_target_ps_path, 'app', 'controllers', file_name)
       )
     end
@@ -47,7 +47,7 @@ module Generators
       file_name = "#{resource['name'].downcase}.rb"
       create_file_from_template(
         resource,
-        File.join(BASE_TEMPLATE_PATH, 'resource_model_template.erb'),
+        File.join(BASE_TEMPLATE_PATH, 'model.erb'),
         File.join(base_target_ps_path, 'app', 'models', file_name)
       )
     end
@@ -58,7 +58,7 @@ module Generators
       file_name = "#{version}_create_#{resource['plural_name'].downcase}.rb"
       create_file_from_template(
         resource,
-        File.join(BASE_TEMPLATE_PATH, 'resource_migration_template.erb'),
+        File.join(BASE_TEMPLATE_PATH, 'migration.erb'),
         File.join(base_target_ps_path, 'db', 'migrate', file_name)
       )
     end
@@ -70,7 +70,7 @@ module Generators
       # TODO WORKING PROGRESS
       create_file_from_template(
         resource,
-        File.join(BASE_TEMPLATE_PATH, 'resource_factory_template.erb'),
+        File.join(BASE_TEMPLATE_PATH, 'factory.erb'),
         File.join(base_target_ps_path, 'spec', 'factories', file_name)
       ) { |field| faker(field) }
     end

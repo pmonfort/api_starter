@@ -12,12 +12,10 @@ module Generators
         resource.merge!({ plural_name: resource['name'].downcase.pluralize })
         index_of_delete = resource['actions'].find_index('delete')
         # Patch delete to Rails destroy
-        if index_of_delete
-          resource['actions'][index_of_delete] = 'destroy'
-        end
+        resource['actions'][index_of_delete] = 'destroy' if index_of_delete
         create_controller(resource)
         create_migration(resource)
-        create_model(resource)
+        create_model(resource, File.join(base_target_ps_path, 'app', 'models'))
         create_factories(resource)
       end
 
@@ -41,66 +39,6 @@ module Generators
         File.join(BASE_TEMPLATE_PATH, 'controller.erb'),
         File.join(base_target_ps_path, 'app', 'controllers', file_name)
       )
-    end
-
-    def create_model(resource)
-      file_name = "#{resource['name'].downcase}.rb"
-      create_file_from_template(
-        resource,
-        File.join(BASE_TEMPLATE_PATH, 'model.erb'),
-        File.join(base_target_ps_path, 'app', 'models', file_name)
-      )
-    end
-
-    def create_migration(resource)
-      self.migration_counter += 1
-      version = (Time.now.utc + self.migration_counter).strftime('%Y%m%d%H%M%S')
-      file_name = "#{version}_create_#{resource['plural_name'].downcase}.rb"
-      create_file_from_template(
-        resource,
-        File.join(BASE_TEMPLATE_PATH, 'migration.erb'),
-        File.join(base_target_ps_path, 'db', 'migrate', file_name)
-      )
-    end
-
-    # Factories
-    def create_factories(resource)
-      file_name = "#{resource['plural_name'].downcase}.rb"
-
-      # TODO WORKING PROGRESS
-      create_file_from_template(
-        resource,
-        File.join(BASE_TEMPLATE_PATH, 'factory.erb'),
-        File.join(base_target_ps_path, 'spec', 'factories', file_name)
-      ) { |field| faker(field) }
-    end
-
-    def faker(field)
-      result = "#{field['name']} "
-      case field['type']
-      when 'string'
-        # If the field name as the string name
-        # it would assign a Faker name
-        result += if field['name'].match(/name/)
-                    '{ Faker::Name.name }'
-                  else
-                    '{ Faker::Lorem.sentence }'
-                  end
-      when 'email'
-        result += '{ Faker::Internet.email }'
-      when 'password'
-        result += '{ Faker::Internet.password }'
-      when 'integer'
-        result += '{ Faker::Number.number(digits: 2) }'
-      when 'price'
-        result += '{ Faker::Number.decimal(l_digits: 2) }'
-      when 'datetime'
-        result += '{ Faker::Date.birthday(min_age: 18, max_age: 65) }'
-      when 'foreign_key'
-        field_name = field['name'].gsub('_id', '')
-        result = "#{field_name} { create(:#{field_name}) }"
-      end
-      result
     end
   end
 end

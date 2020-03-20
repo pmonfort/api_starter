@@ -35,14 +35,89 @@ module Generators
       create_file(target_path, content)
     end
 
+    def create_controller(resource, target_folder_path)
+      file_name = "#{resource['plural_name']}_controller.rb"
+      resource['name_downcase'] = resource['name'].downcase
+
+      create_file_from_template(
+        resource,
+        File.join(base_template_path, 'controller.erb'),
+        File.join(target_folder_path, file_name)
+      )
+    end
+
+    def create_model(resource, target_folder_path)
+      file_name = "#{resource['name'].downcase}.rb"
+      create_file_from_template(
+        resource,
+        File.join(base_template_path, 'model.erb'),
+        File.join(target_folder_path, file_name)
+      )
+    end
+
+    def create_migration(resource)
+      self.migration_counter += 1
+      version = (Time.now.utc + self.migration_counter).strftime('%Y%m%d%H%M%S')
+      file_name = "#{version}_create_#{resource['plural_name'].downcase}.rb"
+      create_file_from_template(
+        resource,
+        File.join(base_template_path, 'migration.erb'),
+        File.join(base_target_ps_path, 'db', 'migrate', file_name)
+      )
+    end
+
+    # Factories
+    def create_factories(resource)
+      file_name = "#{resource['plural_name'].downcase}.rb"
+
+      create_file_from_template(
+        resource,
+        File.join(base_template_path, 'factory.erb'),
+        File.join(base_target_ps_path, 'spec', 'factories', file_name)
+      ) { |field| faker(field) }
+    end
+
+    def faker(field)
+      result = "#{field['name']} "
+      case field['type']
+      when 'string'
+        # If the field name as the string name
+        # it would assign a Faker name
+        result += if field['name'].match(/name/)
+                    '{ Faker::Name.name }'
+                  else
+                    '{ Faker::Lorem.sentence }'
+                  end
+      when 'email'
+        result += '{ Faker::Internet.email }'
+      when 'password'
+        result += '{ Faker::Internet.password }'
+      when 'integer'
+        result += '{ Faker::Number.number(digits: 2) }'
+      when 'price'
+        result += '{ Faker::Number.decimal(l_digits: 2) }'
+      when 'datetime'
+        result += '{ Faker::Date.birthday(min_age: 18, max_age: 65) }'
+      when 'foreign_key'
+        field_name = field['name'].gsub('_id', '')
+        result = "#{field_name} { create(:#{field_name}) }"
+      end
+      result
+    end
+
     def base_target_path
       @base_target_path ||= File.join(
-        './tmp/', "#{Time.now.utc.strftime('%Y%m%d%H%M%S')}_#{self.raw_params['framework']}"
+        './tmp/', "#{Time.now.utc.strftime('%Y%m%d%H%M%S')}_#{raw_params['framework']}"
       )
     end
 
     def base_target_ps_path
       File.join(base_target_path, 'project_structure')
+    end
+
+    # Access Children class BASE_TEMPLATE_PATH
+    def base_template_path
+      self.class::BASE_TEMPLATE_PATH
     end
   end
 end

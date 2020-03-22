@@ -107,7 +107,7 @@ module Generators
 
     def base_target_path
       @base_target_path ||= File.join(
-        './tmp/', "#{Time.now.utc.strftime('%Y%m%d%H%M%S')}_#{raw_params['framework']}"
+        './tmp/', "#{Time.now.utc.strftime('%Y%m%d%H%M%S')}#{rand(999)}_#{raw_params['framework']}"
       )
     end
 

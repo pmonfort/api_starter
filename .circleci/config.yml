@@ -1,0 +1,46 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.4.2-jessie-node
+        environment:
+          BUNDLE_JOBS: 3
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
+          PGHOST: 127.0.0.1
+          PGUSER: fort
+          POSTGRES_DB: api_starter
+          RAILS_ENV: test
+    steps:
+      - checkout
+      - run:
+          name: Which bundler?
+          command: bundle -v
+
+      # Restore bundle cache
+      # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+      - restore_cache:
+          keys:
+            - api_starter-v2-{{ checksum "Gemfile.lock" }}
+            - api_starter-v2-
+
+      - run: # Install Ruby dependencies
+          name: Bundle Install
+          command: bundle check --path vendor/bundle || bundle install --deployment
+
+      # Store bundle cache for Ruby dependencies
+      - save_cache:
+          key: api_starter-v2-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+      # Run specs
+      - run:
+          name: Run rspec in parallel
+          command: |
+            bundle exec rspec
+
+      # Save test results for timing analysis
+      - store_test_results:
+          path: test_results
+      # See https://circlec

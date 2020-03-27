@@ -74,35 +74,39 @@ module Generators
         resource,
         File.join(base_template_path, 'factory.erb'),
         File.join(base_target_ps_path, 'spec', 'factories', file_name)
-      ) { |field| faker(field) }
+      ) do |field|
+        field_name = "#{field['name']}"
+        field_name = field['name'].gsub('_id', '') if field['type'] == 'foreign_key'
+        "#{field_name} #{faker(field)}"
+      end
     end
 
-    def faker(field)
-      result = "#{field['name']} "
+    def faker(field, factory_return_only_id=nil)
       case field['type']
       when 'string'
         # If the field name as the string name
         # it would assign a Faker name
-        result += if field['name'].match(/name/)
-                    '{ Faker::Name.name }'
-                  else
-                    '{ Faker::Lorem.sentence }'
-                  end
+        if field['name'].match(/name/)
+          '{ Faker::Name.name }'
+        else
+          '{ Faker::Lorem.sentence }'
+        end
       when 'email'
-        result += '{ Faker::Internet.email }'
+        '{ Faker::Internet.email }'
       when 'password'
-        result += '{ Faker::Internet.password }'
+        '{ Faker::Internet.password }'
       when 'integer'
-        result += '{ Faker::Number.number(digits: 2) }'
+        '{ Faker::Number.number(digits: 2) }'
       when 'price'
-        result += '{ Faker::Number.decimal(l_digits: 2) }'
+        '{ Faker::Number.decimal(l_digits: 2) }'
       when 'datetime'
-        result += '{ Faker::Date.birthday(min_age: 18, max_age: 65) }'
+        '{ Faker::Date.birthday(min_age: 18, max_age: 65) }'
       when 'foreign_key'
-        field_name = field['name'].gsub('_id', '')
-        result = "#{field_name} { create(:#{field_name}) }"
+        factory_name = nil
+        factory_name = field['name'].gsub('_id', '')
+        return "{ create(:#{factory_name}).id }" if factory_return_only_id
+        "{ create(:#{factory_name}) }"
       end
-      result
     end
 
     def base_target_path

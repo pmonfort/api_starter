@@ -49,19 +49,6 @@ module Generators
       create_routing_spec(resource)
     end
 
-    def create_controller_spec(resource)
-      file_name = "#{resource['plural_name']}_controller_spec.rb"
-      resource['name_downcase'] = resource['name'].downcase
-
-      create_file_from_template(
-        resource,
-        File.join(BASE_TEMPLATE_PATH, 'spec', 'controller.erb'),
-        File.join(base_target_ps_path, 'spec', 'controllers', file_name)
-      ) do |field|
-        "#{field['name']}: #{faker(field, true)}"
-      end
-    end
-
     def create_model_sepc(resource)
       file_name = "#{resource['name'].downcase}.rb"
       resource['name_downcase'] = resource['name'].downcase

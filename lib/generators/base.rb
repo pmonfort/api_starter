@@ -81,6 +81,19 @@ module Generators
       end
     end
 
+    def create_controller_spec(resource)
+      file_name = "#{resource['plural_name']}_controller_spec.rb"
+      resource['name_downcase'] = resource['name'].downcase
+
+      create_file_from_template(
+        resource,
+        File.join(base_template_path, 'spec', 'controller.erb'),
+        File.join(base_target_ps_path, 'spec', 'controllers', file_name)
+      ) do |field|
+        "#{field['name']}: #{faker(field, true)}"
+      end
+    end
+
     def faker(field, factory_return_only_id=nil)
       case field['type']
       when 'string'
@@ -102,7 +115,6 @@ module Generators
       when 'datetime'
         '{ Faker::Date.birthday(min_age: 18, max_age: 65) }'
       when 'foreign_key'
-        factory_name = nil
         factory_name = field['name'].gsub('_id', '')
         return "{ create(:#{factory_name}).id }" if factory_return_only_id
         "{ create(:#{factory_name}) }"
@@ -119,7 +131,7 @@ module Generators
       File.join(base_target_path, 'project_structure')
     end
 
-    # Access Children class BASE_TEMPLATE_PATH
+    # Access Children class BASE_TEMPLATE_PATH constant
     def base_template_path
       self.class::BASE_TEMPLATE_PATH
     end

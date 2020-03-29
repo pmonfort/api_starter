@@ -7,7 +7,6 @@ module Generators
 
     def generate
       copy_project_basic_structure(File.join(BASE_TEMPLATE_PATH, 'project_structure'))
-      create_routes
       resources.each do |resource|
         resource.merge!({ plural_name: resource['name'].downcase.pluralize })
         index_of_delete = resource['actions'].find_index('delete')
@@ -16,9 +15,9 @@ module Generators
         create_controller(resource)
         create_migration(resource)
         create_model(resource, File.join(base_target_ps_path, 'app', 'models'))
-        create_factories(resource)
         create_specs(resource)
       end
+      create_routes
 
       base_target_ps_path
     end
@@ -46,6 +45,7 @@ module Generators
     def create_specs(resource)
       create_controller_spec(resource)
       create_model_sepc(resource)
+      create_factories(resource)
       create_routing_spec(resource)
     end
 

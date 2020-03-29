@@ -77,7 +77,7 @@ module Generators
       ) do |field|
         field_name = "#{field['name']}"
         field_name = field['name'].gsub('_id', '') if field['type'] == 'foreign_key'
-        "#{field_name} #{faker(field)}"
+        "#{field_name} { #{faker(field)} }"
       end
     end
 
@@ -100,24 +100,24 @@ module Generators
         # If the field name as the string name
         # it would assign a Faker name
         if field['name'].match(/name/)
-          '{ Faker::Name.name }'
+          'Faker::Name.name'
         else
-          '{ Faker::Lorem.sentence }'
+          'Faker::Lorem.sentence'
         end
       when 'email'
-        '{ Faker::Internet.email }'
+        'Faker::Internet.email'
       when 'password'
-        '{ Faker::Internet.password }'
+        'Faker::Internet.password'
       when 'integer'
-        '{ Faker::Number.number(digits: 2) }'
+        'Faker::Number.number(digits: 2)'
       when 'price'
-        '{ Faker::Number.decimal(l_digits: 2) }'
+        'Faker::Number.decimal(l_digits: 2)'
       when 'datetime'
-        '{ Faker::Date.birthday(min_age: 18, max_age: 65) }'
+        'Faker::Date.birthday(min_age: 18, max_age: 65)'
       when 'foreign_key'
         factory_name = field['name'].gsub('_id', '')
-        return "{ create(:#{factory_name}).id }" if factory_return_only_id
-        "{ create(:#{factory_name}) }"
+        return "create(:#{factory_name}).id" if factory_return_only_id
+        "create(:#{factory_name})"
       end
     end
 

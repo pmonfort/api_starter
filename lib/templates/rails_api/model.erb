@@ -8,7 +8,7 @@ class <%= name %> < ApplicationRecord
 <% fields.each do |field| %>
 <% field_name = field['name'].downcase%>
 <% field_name.gsub!('_id', '') if field['type'] == 'foreign_key' %>
-<% if field['required'] == 'true' %>
+<% if field['not_null'] == 'true' %>
   <%= "validates :#{field_name}, presence: true" %>
 <% end %>
 <% if field['unique'] == 'true' %>

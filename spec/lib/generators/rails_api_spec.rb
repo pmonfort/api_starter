@@ -50,12 +50,14 @@ describe Generators::RailsAPI do
                 name: 'name',
                 type: 'string',
                 required: 'true',
+                not_null: 'true',
                 unique: 'true'
               },
               {
                 name: 'web_site',
                 type: 'string',
                 required: 'false',
+                not_null: 'false',
                 unique: 'false'
               }
             ],
@@ -68,42 +70,49 @@ describe Generators::RailsAPI do
                 name: 'first_name',
                 type: 'string',
                 required: 'false',
+                not_null: 'false',
                 unique: 'false'
               },
               {
                 name: 'last_name',
                 type: 'string',
                 required: 'false',
+                not_null: 'false',
                 unique: 'false'
               },
               {
                 name: 'email',
                 type: 'email',
                 required: 'true',
+                not_null: 'true',
                 unique: 'true'
               },
               {
                 name: 'password',
                 type: 'password',
                 required: 'true',
+                not_null: 'true',
                 unique: 'false'
               },
               {
                 name: 'age',
                 type: 'integer',
                 required: 'false',
+                not_null: 'false',
                 unique: 'false'
               },
               {
                 name: 'birthday',
                 type: 'datetime',
                 required: 'true',
+                not_null: 'true',
                 unique: 'false'
               },
               {
                 name: 'company_id',
                 type: 'foreign_key',
                 required: 'true',
+                not_null: 'true',
                 unique: 'false'
               }
             ],
@@ -116,12 +125,21 @@ describe Generators::RailsAPI do
                 name: 'name',
                 type: 'string',
                 required: 'true',
+                not_null: 'true',
                 unique: 'true'
               },
               {
                 name: 'price',
                 type: 'price',
                 required: 'false',
+                not_null: 'false',
+                unique: 'false'
+              },
+              {
+                name: 'first_day_on_market',
+                type: 'datetime',
+                required: 'false',
+                not_null: 'true',
                 unique: 'false'
               }
             ],

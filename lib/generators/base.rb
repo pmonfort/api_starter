@@ -113,7 +113,13 @@ module Generators
       when 'price'
         'Faker::Number.decimal(l_digits: 2)'
       when 'datetime'
-        'Faker::Date.birthday(min_age: 18, max_age: 65)'
+        # If the field name as the string birthday
+        # it would assign a Faker birthday
+        if field['name'].match(/birthday/)
+          'Faker::Date.birthday(min_age: 18, max_age: 65)'
+        else
+          'Faker::Date.between(from: 2.days.ago, to: Date.today)'
+        end
       when 'foreign_key'
         factory_name = field['name'].gsub('_id', '')
         return "create(:#{factory_name}).id" if factory_return_only_id

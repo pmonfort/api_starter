@@ -5,15 +5,15 @@ class <%= "Create#{plural_name.capitalize}" %> < ActiveRecord::Migration[6.0]
     create_table <%= ":#{plural_name}" %> do |t|
 <% fields.each do |field| %>
 <% if field['type'] == 'password' %>
-      <%= "t.string :#{field['name'].downcase}, null: false" %>
+      <%= "t.string :#{field['name'].downcase}#{field['not_null'] == 'true' ? ', null: false' : ''}" %>
 <% elsif field['type'] == 'foreign_key' %>
-      <%= "t.references :#{field['name'].downcase.gsub('_id', '')}#{field['required'] == 'true' ? ', null: false' : ''}, foreign_key: true" %>
+      <%= "t.references :#{field['name'].downcase.gsub('_id', '')}#{field['not_null'] == 'true' ? ', null: false' : ''}, foreign_key: true" %>
 <% elsif field['type'] == 'price' %>
-      <%= "t.decimal :#{field['name'].downcase}, precision: 8, scale: 2#{field['required'] == 'true' ? ', null: false' : ''}" %>
+      <%= "t.decimal :#{field['name'].downcase}, precision: 8, scale: 2#{field['not_null'] == 'true' ? ', null: false' : ''}" %>
 <% elsif field['type'] == 'email' %>
-      <%= "t.string :#{field['name'].downcase}#{field['required'] == 'true' ? ', null: false' : ''}" %>
+      <%= "t.string :#{field['name'].downcase}#{field['not_null'] == 'true' ? ', null: false' : ''}" %>
 <% else %>
-      <%= "t.#{field['type']} :#{field['name'].downcase}#{field['required'] == 'true' ? ', null: false' : ''}" %>
+      <%= "t.#{field['type']} :#{field['name'].downcase}#{field['not_null'] == 'true' ? ', null: false' : ''}" %>
 <% end %>
 <% end %>
 

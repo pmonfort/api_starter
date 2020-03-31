@@ -156,6 +156,23 @@ RSpec.describe <%= "#{plural_name.capitalize}Controller" %>, type: :controller d
         expect(response.content_type).to eq('application/json; charset=utf-8')
       end
     end
+
+    describe 'with invalid params' do
+<% required_fields.each_with_index do |field, index| %>
+      context 'missing required <%= field['name'].downcase %>' do
+        it 'renders a JSON response with errors for the new <%= name_downcase %>' do
+          post :create, params: {
+            <%= name_downcase %>: invalid_missing_required_param_<%= field['name'].downcase %>
+          }, session: valid_session
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response.content_type).to eq('application/json; charset=utf-8')
+        end
+      end
+<% unless index == required_fields.size - 1 %>
+
+<% end %>
+<% end %>
+    end
   end
 
 <% end %>

@@ -7,6 +7,13 @@ module Generators
 
     def initialize(params)
       self.raw_params = params
+
+      # Sort resources and fields by name
+      params['resources'].sort_by! { |resource| resource['name'] }
+      params['resources'].each do |resource|
+        resource['fields'].sort_by! { |field| field['name'] }
+      end
+
       self.resources = params['resources']
       self.swagger = params['swagger']
       self.validation = params['validation']

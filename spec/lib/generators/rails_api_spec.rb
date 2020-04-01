@@ -313,5 +313,40 @@ describe Generators::RailsAPI do
         let(:file_path) { 'config/routes.rb' }
       end
     end
+
+    describe 'Spec' do
+      describe 'Controller' do
+        let(:generated_product_controller) do
+          File.join(result_path, 'spec', 'controllers', 'products_controller_spec.rb')
+        end
+        let(:generated_company_controller) do
+          File.join(result_path, 'spec', 'controllers', 'companies_controller_spec.rb')
+        end
+        let(:generated_user_controller) do
+          File.join(result_path, 'spec', 'controllers', 'users_controller_spec.rb')
+        end
+
+        it 'generate files' do
+          expect(File.exist?(generated_product_controller)).to be true
+          expect(File.exist?(generated_company_controller)).to be true
+          expect(File.exist?(generated_user_controller)).to be true
+        end
+
+        it_behaves_like 'generated file', 'controller' do
+          let(:generated_file_path) { generated_product_controller }
+          let(:file_path) { 'spec/controllers/products.rb' }
+        end
+
+        it_behaves_like 'generated file', 'controller' do
+          let(:generated_file_path) { generated_company_controller }
+          let(:file_path) { 'spec/controllers/companies.rb' }
+        end
+
+        it_behaves_like 'generated file', 'controller' do
+          let(:generated_file_path) { generated_user_controller }
+          let(:file_path) { 'spec/controllers/users.rb' }
+        end
+      end
+    end
   end
 end

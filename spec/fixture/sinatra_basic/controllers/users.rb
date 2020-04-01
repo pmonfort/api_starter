@@ -12,7 +12,7 @@ module API
       user
     end
 
-    post '/users', allows: %i[first_name last_name age], needs: %i[email password birthday company_id] do
+    post '/users', allows: %i[age first_name last_name], needs: %i[birthday company_id email password] do
       if user.update(user_params)
         status 201
         { message: 'User was successfully created.' }
@@ -21,7 +21,7 @@ module API
       end
     end
 
-    put '/users/:id', allows: %i[first_name last_name email password age birthday company_id] do
+    put '/users/:id', allows: %i[age birthday company_id email first_name last_name password] do
       if user.update(user_params)
         { message: 'User was successfully updated.' }
       else

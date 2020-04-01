@@ -12,7 +12,7 @@ module API
       product
     end
 
-    post '/products', allows: %i[price], needs: %i[name] do
+    post '/products', allows: %i[first_day_on_market price], needs: %i[name] do
       if product.update(product_params)
         status 201
         { message: 'Product was successfully created.' }
@@ -21,7 +21,7 @@ module API
       end
     end
 
-    put '/products/:id', allows: %i[name price] do
+    put '/products/:id', allows: %i[first_day_on_market name price] do
       if product.update(product_params)
         { message: 'Product was successfully updated.' }
       else

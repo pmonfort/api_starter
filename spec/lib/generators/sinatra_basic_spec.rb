@@ -55,12 +55,14 @@ describe Generators::SinatraBasic do
                 name: 'name',
                 type: 'string',
                 required: 'true',
+                not_null: 'true',
                 unique: 'true'
               },
               {
                 name: 'web_site',
                 type: 'string',
                 required: 'false',
+                not_null: 'false',
                 unique: 'false'
               }
             ],
@@ -73,42 +75,49 @@ describe Generators::SinatraBasic do
                 name: 'first_name',
                 type: 'string',
                 required: 'false',
+                not_null: 'false',
                 unique: 'false'
               },
               {
                 name: 'last_name',
                 type: 'string',
                 required: 'false',
+                not_null: 'false',
                 unique: 'false'
               },
               {
                 name: 'email',
                 type: 'email',
                 required: 'true',
+                not_null: 'true',
                 unique: 'true'
               },
               {
                 name: 'password',
                 type: 'password',
                 required: 'true',
+                not_null: 'true',
                 unique: 'false'
               },
               {
                 name: 'age',
                 type: 'integer',
                 required: 'false',
+                not_null: 'false',
                 unique: 'false'
               },
               {
                 name: 'birthday',
                 type: 'datetime',
                 required: 'true',
+                not_null: 'true',
                 unique: 'false'
               },
               {
                 name: 'company_id',
                 type: 'foreign_key',
                 required: 'true',
+                not_null: 'true',
                 unique: 'false'
               }
             ],
@@ -121,12 +130,21 @@ describe Generators::SinatraBasic do
                 name: 'name',
                 type: 'string',
                 required: 'true',
+                not_null: 'true',
                 unique: 'true'
               },
               {
                 name: 'price',
                 type: 'price',
                 required: 'false',
+                not_null: 'false',
+                unique: 'false'
+              },
+              {
+                name: 'first_day_on_market',
+                type: 'datetime',
+                required: 'false',
+                not_null: 'true',
                 unique: 'false'
               }
             ],
@@ -176,10 +194,10 @@ describe Generators::SinatraBasic do
             File.open(File.join(result_path, 'api', 'users_controller.rb'))
           end
           let(:create_method_strong_parameters) do
-            'allows: %i[first_name last_name age], needs: %i[email password birthday company_id]'
+            'allows: %i[age first_name last_name], needs: %i[birthday company_id email password]'
           end
           let(:update_allows_strong_parameters) do
-            'allows: %i[first_name last_name email password age birthday company_id]'
+            'allows: %i[age birthday company_id email first_name last_name password]'
           end
           let(:plural_name) { 'users' }
         end
@@ -278,19 +296,54 @@ describe Generators::SinatraBasic do
         expect(File.exist?(generated_user_factory)).to be true
       end
 
-      it_behaves_like 'generated file', 'migration' do
+      it_behaves_like 'generated file', 'factory' do
         let(:generated_file_path) { generated_product_factory }
         let(:file_path) { 'factories/products.rb' }
       end
 
-      it_behaves_like 'generated file', 'migration' do
+      it_behaves_like 'generated file', 'factory' do
         let(:generated_file_path) { generated_company_factory }
         let(:file_path) { 'factories/companies.rb' }
       end
 
-      it_behaves_like 'generated file', 'migration' do
+      it_behaves_like 'generated file', 'factory' do
         let(:generated_file_path) { generated_user_factory }
         let(:file_path) { 'factories/users.rb' }
+      end
+    end
+
+    describe 'Spec' do
+      describe 'Controller' do
+        let(:generated_product_controller) do
+          File.join(result_path, 'spec', 'controllers', 'products_controller_spec.rb')
+        end
+        let(:generated_company_controller) do
+          File.join(result_path, 'spec', 'controllers', 'companies_controller_spec.rb')
+        end
+        let(:generated_user_controller) do
+          File.join(result_path, 'spec', 'controllers', 'users_controller_spec.rb')
+        end
+
+        it 'generate files' do
+          expect(File.exist?(generated_product_controller)).to be true
+          expect(File.exist?(generated_company_controller)).to be true
+          expect(File.exist?(generated_user_controller)).to be true
+        end
+
+        it_behaves_like 'generated file', 'controller' do
+          let(:generated_file_path) { generated_product_controller }
+          let(:file_path) { 'spec/controllers/products.rb' }
+        end
+
+        it_behaves_like 'generated file', 'controller' do
+          let(:generated_file_path) { generated_company_controller }
+          let(:file_path) { 'spec/controllers/companies.rb' }
+        end
+
+        it_behaves_like 'generated file', 'controller' do
+          let(:generated_file_path) { generated_user_controller }
+          let(:file_path) { 'spec/controllers/users.rb' }
+        end
       end
     end
   end

@@ -12,20 +12,22 @@ module API
       user
     end
 
-    post '/users', allows: %i[age first_name last_name], needs: %i[birthday company_id email password] do
-      if user.update(user_params)
+    post '/users' do
+      required_params user: %i[birthday company_id email password]
+      user = User.new(user_params)
+      if user.save
         status 201
         { message: 'User was successfully created.' }
       else
-        halt 500, json({ message: user.errors.full_messages })
+        halt 400, json({ message: user.errors.full_messages })
       end
     end
 
-    put '/users/:id', allows: %i[age birthday company_id email first_name last_name password] do
+    put '/users/:id' do
       if user.update(user_params)
         { message: 'User was successfully updated.' }
       else
-        halt 500, json({ message: user.errors.full_messages })
+        halt 400, json({ message: user.errors.full_messages })
       end
     end
 
@@ -36,6 +38,14 @@ module API
 
     def user
       @user ||= User.find(params[:id])
+    rescue
+      halt 404
+    end
+
+    def product_params
+      params['user'].slice(
+        %w[age birthday company_id email first_name last_name password]
+      )
     end
   end
 end

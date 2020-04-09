@@ -4,27 +4,27 @@ shared_examples 'generated controller' do |actions|
   let(:controller_content) { File.open(controller_file_path).read }
 
   it "will #{actions[:create] ? 'include' : 'not include'} create endpoint" do
-    endpoint_firm = "post '/#{plural_name}', #{create_method_strong_parameters}"
+    endpoint_firm = "post '/#{plural_name}' do"
     expect(controller_content.include?(endpoint_firm)).to be actions[:create]
   end
 
   it "will #{actions[:update] ? 'include' : 'not include'} update endpoint" do
-    endpoint_firm = "put '/#{plural_name}/:id', #{update_allows_strong_parameters}"
+    endpoint_firm = "put '/#{plural_name}/:id' do"
     expect(controller_content.include?(endpoint_firm)).to be actions[:update]
   end
 
   it "will #{actions[:delete] ? 'include' : 'not include'} delete endpoint" do
-    endpoint_firm = "delete '/#{plural_name}/:id'"
+    endpoint_firm = "delete '/#{plural_name}/:id' do"
     expect(controller_content.include?(endpoint_firm)).to be actions[:delete]
   end
 
   it "will #{actions[:show] ? 'include' : 'not include'} show endpoint" do
-    endpoint_firm = "get '/#{plural_name}/:id'"
+    endpoint_firm = "get '/#{plural_name}/:id' do"
     expect(controller_content.include?(endpoint_firm)).to be actions[:show]
   end
 
   it "will #{actions[:index] ? 'include' : 'not include'} index endpoint" do
-    endpoint_firm = "get '/#{plural_name}'"
+    endpoint_firm = "get '/#{plural_name}' do"
     expect(controller_content.include?(endpoint_firm)).to be actions[:index]
   end
 end

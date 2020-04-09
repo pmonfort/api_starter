@@ -12,20 +12,22 @@ module API
       product
     end
 
-    post '/products', allows: %i[first_day_on_market price], needs: %i[name] do
-      if product.update(product_params)
+    post '/products' do
+      required_params product: %i[name]
+      product = Product.new(product_params)
+      if product.save
         status 201
         { message: 'Product was successfully created.' }
       else
-        halt 500, json({ message: product.errors.full_messages })
+        halt 400, json({ message: product.errors.full_messages })
       end
     end
 
-    put '/products/:id', allows: %i[first_day_on_market name price] do
+    put '/products/:id' do
       if product.update(product_params)
         { message: 'Product was successfully updated.' }
       else
-        halt 500, json({ message: product.errors.full_messages })
+        halt 400, json({ message: product.errors.full_messages })
       end
     end
 
@@ -36,6 +38,14 @@ module API
 
     def product
       @product ||= Product.find(params[:id])
+    rescue
+      halt 404
+    end
+
+    def product_params
+      params['product'].slice(
+        %w[first_day_on_market name price]
+      )
     end
   end
 end

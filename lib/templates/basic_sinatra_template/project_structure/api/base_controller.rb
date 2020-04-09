@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
 require 'sinatra/base'
-require 'sinatra/strong-params'
+require "sinatra/required_params"
 
 module API
   # Base controller
   class BaseController < Sinatra::Base
-    configure do
-      register Sinatra::StrongParams
-    end
+    helpers Sinatra::RequiredParams
 
     before do
       content_type :json

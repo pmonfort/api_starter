@@ -12,42 +12,58 @@ module API
 <% end %>
 <% if actions.include?('show') %>
     get '<%= "/#{plural_name}/:id" %>' do
-      <%= name.downcase %>
+      <%= name_downcase %>
     end
 
 <% end %>
 <% if actions.include?('create') %>
-    post '<%= "/#{plural_name}'#{create_method_strong_parameters}" %> do
-      if <%= "#{name.downcase}.update(#{name.downcase}_params)" %>
+    post '<%= "/#{plural_name}" %>' do
+<% unless required_fields.empty? %>
+      <%= "required_params #{name_downcase}: %i[#{required_fields.map { |field| field['name'] }.join(' ')}]" %>
+<% end %>
+      <%= "#{name_downcase} = #{name}.new(#{name.downcase}_params)" %>
+      if <%= "#{name_downcase}.save" %>
         status 201
         { message: '<%= name %> was successfully created.' }
       else
-        halt 500, json({ message: <%= "#{name.downcase}.errors.full_messages" %> })
+        halt 400, json({ message: <%= "#{name_downcase}.errors.full_messages" %> })
       end
     end
 
 <% end %>
 <% if actions.include?('update') %>
-    put '<%= "/#{plural_name}/:id'#{update_allows_strong_parameters}" %> do
-      if <%= "#{name.downcase}.update(#{name.downcase}_params)" %>
+    put '<%= "/#{plural_name}/:id'" %> do
+      if <%= "#{name_downcase}.update(#{name.downcase}_params)" %>
         { message: '<%= name %> was successfully updated.' }
       else
-        halt 500, json({ message: <%= "#{name.downcase}.errors.full_messages" %> })
+        halt 400, json({ message: <%= "#{name_downcase}.errors.full_messages" %> })
       end
     end
 
 <% end %>
 <% if actions.include?('delete') %>
     delete '<%= "/#{plural_name}/:id" %>' do
-      <%= "#{name.downcase}.destroy" %>
+      <%= "#{name_downcase}.destroy" %>
       { message: '<%= name %> has been deleted' }
     end
 
 <% end %>
 <% if actions & %w[show update delete] %>
-    def <%= name.downcase %>
-      <%= "@#{name.downcase} ||= #{name}.find(params[:id])" %>
+    def <%= name_downcase %>
+      <%= "@#{name_downcase} ||= #{name}.find(params[:id])" %>
+    rescue
+      halt 404
     end
+<% if actions & %w[create update] %>
+
 <% end %>
+<% end %>
+<% if actions & %w[create update] %>
+    def product_params
+      params['<%= name_downcase %>'].slice(
+        %w[<%= fields.map { |field| field['name'] }.join(' ') %>]
+      )
+    end
   end
+<% end %>
 end

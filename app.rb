@@ -21,8 +21,8 @@ class App < Sinatra::Base
     case framework
     when 'RailsAPI'
       Generators::RailsAPI
-    when 'SinatraBasic'
-      Generators::SinatraBasic
+    when 'Sinatra'
+      Generators::Sinatra
     when 'Rust'
       Generators::Rust
     when 'Elixir'

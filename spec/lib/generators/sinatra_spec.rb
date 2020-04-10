@@ -32,7 +32,7 @@ end
 shared_examples 'generated file' do |type|
   let(:file_content) { File.open(generated_file_path).read }
   let(:expected_content) do
-    File.open(File.join('./spec/fixture/sinatra_basic/', file_path)).read
+    File.open(File.join('./spec/fixture/sinatra/', file_path)).read
   end
 
   it "generate the right #{type}" do
@@ -40,11 +40,11 @@ shared_examples 'generated file' do |type|
   end
 end
 
-describe Generators::SinatraBasic do
+describe Generators::Sinatra do
   let(:valid_params) do
     ActiveSupport::HashWithIndifferentAccess.new(
       {
-        framework: 'SinatraBasic',
+        framework: 'Sinatra',
         swagger: 'true',
         validation: 'true',
         resources: [
@@ -155,7 +155,7 @@ describe Generators::SinatraBasic do
     )
   end
 
-  let!(:result_path) { Generators::SinatraBasic.new(valid_params).generate }
+  let!(:result_path) { Generators::Sinatra.new(valid_params).generate }
 
   context 'valid params' do
     describe 'controllers' do

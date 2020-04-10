@@ -1,12 +1,12 @@
 require "rubygems"
 require "bundler"
 
-Bundler.require(:default)
-Bundler.require(Sinatra::Base.environment)
-
+require 'active_support/inflector'
 require 'sinatra'
 require 'sinatra/activerecord'
-require 'active_support/inflector'
+
+Bundler.require(:default)
+Bundler.require(Sinatra::Base.environment)
 
 # Require API Controllers
 Dir['./api/**/*.rb'].sort.each do |file|

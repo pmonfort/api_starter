@@ -79,7 +79,7 @@ module Generators
 
       create_file_from_template(
         resource,
-        File.join(base_template_path, 'factory.erb'),
+        File.join(base_template_path, 'spec', 'factory.erb'),
         File.join(base_target_ps_path, 'spec', 'factories', file_name)
       ) do |field|
         field_name = "#{field['name']}"

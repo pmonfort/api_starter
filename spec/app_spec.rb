@@ -92,10 +92,10 @@ describe App do
         end
       end
 
-      context 'framework Sinatra Basic' do
-        let(:updated_params) { valid_params.merge({ framework: 'SinatraBasic' }) }
+      context 'framework Sinatra' do
+        let(:updated_params) { valid_params.merge({ framework: 'Sinatra' }) }
         it_behaves_like 'valid request' do
-          let(:generator) { Generators::SinatraBasic }
+          let(:generator) { Generators::Sinatra }
           let(:params) { updated_params }
         end
       end

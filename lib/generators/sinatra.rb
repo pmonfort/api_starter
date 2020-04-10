@@ -5,8 +5,8 @@ require 'active_support/inflector'
 
 module Generators
   # Basic Sinatra API Generator
-  class SinatraBasic < Base
-    BASE_TEMPLATE_PATH = './lib/templates/basic_sinatra_template'
+  class Sinatra < Base
+    BASE_TEMPLATE_PATH = './lib/templates/sinatra'
 
     def generate
       copy_project_basic_structure(File.join(BASE_TEMPLATE_PATH, 'project_structure'))

@@ -17,23 +17,23 @@ module API
       user = User.new(user_params)
       if user.save
         status 201
-        { message: 'User was successfully created.' }
+        { message: 'User was successfully created.' }.to_json
       else
-        halt 400, json({ message: user.errors.full_messages })
+        halt 400, { message: user.errors.full_messages }.to_json
       end
     end
 
     put '/users/:id' do
       if user.update(user_params)
-        { message: 'User was successfully updated.' }
+        { message: 'User was successfully updated.' }.to_json
       else
-        halt 400, json({ message: user.errors.full_messages })
+        halt 400, { message: user.errors.full_messages }.to_json
       end
     end
 
     delete '/users/:id' do
       user.destroy
-      { message: 'User has been deleted' }
+      { message: 'User has been deleted' }.to_json
     end
 
     def user

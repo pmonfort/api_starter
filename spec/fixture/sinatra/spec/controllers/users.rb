@@ -79,7 +79,7 @@ RSpec.describe API::UsersController do
 
   describe 'GET /users/:id' do
     it 'returns a success response' do
-      get '/users', { id: user.id }, session: valid_session
+      get "/users/#{user.id}", {}, session: valid_session
       expect(last_response).to be_successful
     end
 

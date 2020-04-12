@@ -13,17 +13,17 @@ module API
       company = Company.new(company_params)
       if company.save
         status 201
-        { message: 'Company was successfully created.' }
+        { message: 'Company was successfully created.' }.to_json
       else
-        halt 400, json({ message: company.errors.full_messages })
+        halt 400, { message: company.errors.full_messages }.to_json
       end
     end
 
     put '/companies/:id' do
       if company.update(company_params)
-        { message: 'Company was successfully updated.' }
+        { message: 'Company was successfully updated.' }.to_json
       else
-        halt 400, json({ message: company.errors.full_messages })
+        halt 400, { message: company.errors.full_messages }.to_json
       end
     end
 

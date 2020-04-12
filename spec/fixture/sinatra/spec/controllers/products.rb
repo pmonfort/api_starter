@@ -38,7 +38,7 @@ RSpec.describe API::ProductsController do
 
   describe 'GET /products/:id' do
     it 'returns a success response' do
-      get '/products', { id: product.id }, session: valid_session
+      get "/products/#{product.id}", {}, session: valid_session
       expect(last_response).to be_successful
     end
 

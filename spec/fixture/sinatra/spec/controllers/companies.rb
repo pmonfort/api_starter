@@ -29,7 +29,7 @@ RSpec.describe API::CompaniesController do
 
   describe 'GET /companies/:id' do
     it 'returns a success response' do
-      get '/companies', { id: company.id }, session: valid_session
+      get "/companies/#{company.id}", {}, session: valid_session
       expect(last_response).to be_successful
     end
 

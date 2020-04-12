@@ -54,7 +54,7 @@ RSpec.describe <%= "API::#{plural_name.capitalize}Controller" %> do
 <% if actions.include?('show') %>
   describe 'GET <%= "/#{plural_name}/:id" %>' do
     it 'returns a success response' do
-      get '<%= "/#{plural_name}" %>', { id: <%= name_downcase %>.id }, session: valid_session
+      get "/<%= plural_name %>/#{<%= name_downcase %>.id}", {}, session: valid_session
       expect(last_response).to be_successful
     end
 

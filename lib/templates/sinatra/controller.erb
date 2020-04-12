@@ -6,7 +6,7 @@ module API
   class <%= plural_name.capitalize %>Controller < BaseController
 <% if actions.include?('index') %>
     get '<%= "/#{plural_name}" %>' do
-      <%= "#{name}.all" %>
+      <%= "#{name}" %>.all
     end
 
 <% end %>
@@ -24,9 +24,9 @@ module API
       <%= "#{name_downcase} = #{name}.new(#{name.downcase}_params)" %>
       if <%= "#{name_downcase}.save" %>
         status 201
-        { message: '<%= name %> was successfully created.' }
+        { message: '<%= name %> was successfully created.' }.to_json
       else
-        halt 400, json({ message: <%= "#{name_downcase}.errors.full_messages" %> })
+        halt 400, { message: <%= "#{name_downcase}.errors.full_messages" %> }.to_json
       end
     end
 
@@ -34,9 +34,9 @@ module API
 <% if actions.include?('update') %>
     put '<%= "/#{plural_name}/:id'" %> do
       if <%= "#{name_downcase}.update(#{name.downcase}_params)" %>
-        { message: '<%= name %> was successfully updated.' }
+        { message: '<%= name %> was successfully updated.' }.to_json
       else
-        halt 400, json({ message: <%= "#{name_downcase}.errors.full_messages" %> })
+        halt 400, { message: <%= "#{name_downcase}.errors.full_messages" %> }.to_json
       end
     end
 
@@ -44,7 +44,7 @@ module API
 <% if actions.include?('delete') %>
     delete '<%= "/#{plural_name}/:id" %>' do
       <%= "#{name_downcase}.destroy" %>
-      { message: '<%= name %> has been deleted' }
+      { message: '<%= name %> has been deleted' }.to_json
     end
 
 <% end %>

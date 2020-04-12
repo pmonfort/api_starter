@@ -6,30 +6,24 @@ RSpec.describe <%= "API::#{plural_name.capitalize}Controller" %> do
   # This should return the minimal set of attributes required to create a valid
   # <%= name %>. As you add validations to <%= name %>, be sure to
   # adjust the attributes here as well.
+<% # TODO Add a spec with a resource without create and update actions %>
+<% unless (actions & %w[create update]).empty? %>
   let(:valid_attributes) do
-    {
-<% fields.each_with_index do |field, index| %>
-<% if index == fields.size - 1 %>
-      <%= yield(field) %>
-<% else %>
-      <%= "#{yield(field)}," %>
+    build(:<%= name_downcase %>).attributes.slice(
+      *%w[
+<% fields.map do |field| %>
+        <%= field['name'] %>
 <% end %>
-<% end %>
-    }
+      ]
+    )
   end
+<% end %>
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
   # <%= "#{plural_name.capitalize}Controller" %>. Be sure to keep this updated too.
   let(:valid_session) { {} }
   let!(:<%= name_downcase %>) { create(:<%= name_downcase %>) }
-<% unless (actions & %w[create update]).empty? %>
-  let(:valid_attributes) do
-    build(:<%= name_downcase %>).attributes.slice(
-      *%w[<%= fields.map { |field| field['name'] }.join(' ') %>]
-    )
-  end
-<% end %>
 
 <% if actions.include?('index') %>
   describe 'GET <%= "/#{plural_name}" %>' do
@@ -81,7 +75,7 @@ RSpec.describe <%= "API::#{plural_name.capitalize}Controller" %> do
       context 'missing required <%= field['name'].downcase %>' do
         it 'renders a JSON response with errors for the new <%= name_downcase %>' do
           post '<%= "/#{plural_name}" %>', {
-            <%= "#{name_downcase}" %>: valid_attributes.reject { |key, val| key == '<%= field['name'].downcase %>' }
+            <%= "#{name_downcase}" %>: valid_attributes.reject { |key, _| key == '<%= field['name'].downcase %>' }
           }, session: valid_session
           expect(last_response.status).to eq(400)
           expect(last_response.content_type).to eq('application/json')
@@ -95,7 +89,6 @@ RSpec.describe <%= "API::#{plural_name.capitalize}Controller" %> do
   end
 
 <% end %>
-<% # TODO Need to update this %>
 <% if actions.include?('update') %>
   describe 'PUT <%= "/#{plural_name}/:id" %>' do
     context 'with valid params' do
@@ -107,11 +100,11 @@ RSpec.describe <%= "API::#{plural_name.capitalize}Controller" %> do
 
       it 'updates the requested <%= name_downcase %>' do
         <%= name_downcase %>.reload
-<% fields.map { |field| field['name'] }.each do |field_name| %>
-        expect(<%= "#{name_downcase}.#{field_name}" %>).to eq(
-          valid_attributes['<%= field_name %>']
-        )
-<% end %>
+        expect(
+          <%= name_downcase %>.attributes.select do |key, _|
+            valid_attributes.keys.include?(key)
+          end
+        ).to eq(valid_attributes)
       end
 
       it 'renders a JSON response with the <%= name_downcase %>' do

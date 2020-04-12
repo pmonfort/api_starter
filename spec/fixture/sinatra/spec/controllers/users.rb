@@ -25,7 +25,15 @@ RSpec.describe API::UsersController do
   let!(:user) { create(:user) }
   let(:valid_attributes) do
     build(:user).attributes.slice(
-      *%w[age birthday company_id email first_name last_name password]
+      *%w[
+        age
+        birthday
+        company_id
+        email
+        first_name
+        last_name
+        password
+      ]
     )
   end
 
@@ -73,7 +81,7 @@ RSpec.describe API::UsersController do
       context 'missing required birthday' do
         it 'renders a JSON response with errors for the new user' do
           post '/users', {
-            user: valid_attributes.reject { |key, val| key == 'birthday' }
+            user: valid_attributes.reject { |key, _| key == 'birthday' }
           }, session: valid_session
           expect(last_response.status).to eq(400)
           expect(last_response.content_type).to eq('application/json')
@@ -83,7 +91,7 @@ RSpec.describe API::UsersController do
       context 'missing required company_id' do
         it 'renders a JSON response with errors for the new user' do
           post '/users', {
-            user: valid_attributes.reject { |key, val| key == 'company_id' }
+            user: valid_attributes.reject { |key, _| key == 'company_id' }
           }, session: valid_session
           expect(last_response.status).to eq(400)
           expect(last_response.content_type).to eq('application/json')
@@ -93,7 +101,7 @@ RSpec.describe API::UsersController do
       context 'missing required email' do
         it 'renders a JSON response with errors for the new user' do
           post '/users', {
-            user: valid_attributes.reject { |key, val| key == 'email' }
+            user: valid_attributes.reject { |key, _| key == 'email' }
           }, session: valid_session
           expect(last_response.status).to eq(400)
           expect(last_response.content_type).to eq('application/json')
@@ -103,7 +111,7 @@ RSpec.describe API::UsersController do
       context 'missing required password' do
         it 'renders a JSON response with errors for the new user' do
           post '/users', {
-            user: valid_attributes.reject { |key, val| key == 'password' }
+            user: valid_attributes.reject { |key, _| key == 'password' }
           }, session: valid_session
           expect(last_response.status).to eq(400)
           expect(last_response.content_type).to eq('application/json')
@@ -122,27 +130,11 @@ RSpec.describe API::UsersController do
 
       it 'updates the requested user' do
         user.reload
-        expect(user.age).to eq(
-          valid_attributes['age']
-        )
-        expect(user.birthday).to eq(
-          valid_attributes['birthday']
-        )
-        expect(user.company_id).to eq(
-          valid_attributes['company_id']
-        )
-        expect(user.email).to eq(
-          valid_attributes['email']
-        )
-        expect(user.first_name).to eq(
-          valid_attributes['first_name']
-        )
-        expect(user.last_name).to eq(
-          valid_attributes['last_name']
-        )
-        expect(user.password).to eq(
-          valid_attributes['password']
-        )
+        expect(
+          user.attributes.select do |key, _|
+            valid_attributes.keys.include?(key)
+          end
+        ).to eq(valid_attributes)
       end
 
       it 'renders a JSON response with the user' do

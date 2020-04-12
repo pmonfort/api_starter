@@ -21,7 +21,11 @@ RSpec.describe API::ProductsController do
   let!(:product) { create(:product) }
   let(:valid_attributes) do
     build(:product).attributes.slice(
-      *%w[first_day_on_market name price]
+      *%w[
+        first_day_on_market
+        name
+        price
+      ]
     )
   end
 
@@ -69,7 +73,7 @@ RSpec.describe API::ProductsController do
       context 'missing required name' do
         it 'renders a JSON response with errors for the new product' do
           post '/products', {
-            product: valid_attributes.reject { |key, val| key == 'name' }
+            product: valid_attributes.reject { |key, _| key == 'name' }
           }, session: valid_session
           expect(last_response.status).to eq(400)
           expect(last_response.content_type).to eq('application/json')
@@ -88,15 +92,11 @@ RSpec.describe API::ProductsController do
 
       it 'updates the requested product' do
         product.reload
-        expect(product.first_day_on_market).to eq(
-          valid_attributes['first_day_on_market']
-        )
-        expect(product.name).to eq(
-          valid_attributes['name']
-        )
-        expect(product.price).to eq(
-          valid_attributes['price']
-        )
+        expect(
+          product.attributes.select do |key, _|
+            valid_attributes.keys.include?(key)
+          end
+        ).to eq(valid_attributes)
       end
 
       it 'renders a JSON response with the product' do

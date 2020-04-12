@@ -20,7 +20,10 @@ RSpec.describe API::CompaniesController do
   let!(:company) { create(:company) }
   let(:valid_attributes) do
     build(:company).attributes.slice(
-      *%w[name web_site]
+      *%w[
+        name
+        web_site
+      ]
     )
   end
 
@@ -61,7 +64,7 @@ RSpec.describe API::CompaniesController do
       context 'missing required name' do
         it 'renders a JSON response with errors for the new company' do
           post '/companies', {
-            company: valid_attributes.reject { |key, val| key == 'name' }
+            company: valid_attributes.reject { |key, _| key == 'name' }
           }, session: valid_session
           expect(last_response.status).to eq(400)
           expect(last_response.content_type).to eq('application/json')
@@ -80,12 +83,11 @@ RSpec.describe API::CompaniesController do
 
       it 'updates the requested company' do
         company.reload
-        expect(company.name).to eq(
-          valid_attributes['name']
-        )
-        expect(company.web_site).to eq(
-          valid_attributes['web_site']
-        )
+        expect(
+          company.attributes.select do |key, _|
+            valid_attributes.keys.include?(key)
+          end
+        ).to eq(valid_attributes)
       end
 
       it 'renders a JSON response with the company' do

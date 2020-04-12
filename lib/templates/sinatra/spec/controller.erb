@@ -138,6 +138,8 @@ RSpec.describe <%= "API::#{plural_name.capitalize}Controller" %> do
 
     describe 'with invalid params' do
 <% required_fields.each_with_index do |field, index| %>
+<% type_email = field['type'] == 'email' %>
+<% field_name = field['type'] == 'foreign_key' ? field['name'].gsub('_id', '') : field['name'] %>
       context 'with <%= field['name'].downcase %> set to nil' do
         it 'renders a JSON response with errors' do
           put "/<%= plural_name %>/#{<%= name_downcase %>.id}", {
@@ -145,11 +147,30 @@ RSpec.describe <%= "API::#{plural_name.capitalize}Controller" %> do
           }, session: valid_session
           error_messages = JSON.parse(last_response.body)['message']
           expect(last_response.status).to eq(400)
+<% if field['type'] == 'email' %>
+          expect(error_messages.count).to eq(2)
+<% else %>
           expect(error_messages.count).to eq(1)
-          expect(error_messages[0]).to eq('<%= field['name'].capitalize %> can\'t be blank')
+<% end %>
+          expect(error_messages[0]).to eq('<%= field_name.capitalize %> can\'t be blank')
           expect(last_response.content_type).to eq('application/json')
         end
       end
+<% if field['type'] == 'email' %>
+
+      context 'with wrong format <%= field['name'].downcase %>' do
+        it 'renders a JSON response with errors' do
+          put "/<%= plural_name %>/#{<%= name_downcase %>.id}", {
+            <%= "#{name_downcase}" %>: new_attributes.merge({ <%= field['name'].downcase %>: 'not_an_email' })
+          }, session: valid_session
+          error_messages = JSON.parse(last_response.body)['message']
+          expect(last_response.status).to eq(400)
+          expect(error_messages.count).to eq(1)
+          expect(error_messages[0]).to eq('<%= field['name'].capitalize %> is invalid')
+          expect(last_response.content_type).to eq('application/json')
+        end
+      end
+<% end  %>
 <% unless index == required_fields.size - 1 %>
 
 <% end %>

@@ -220,7 +220,7 @@ RSpec.describe API::UsersController do
           error_messages = JSON.parse(last_response.body)['message']
           expect(last_response.status).to eq(400)
           expect(error_messages.count).to eq(1)
-          expect(error_messages[0]).to eq('Company_id can\'t be blank')
+          expect(error_messages[0]).to eq('Company can\'t be blank')
           expect(last_response.content_type).to eq('application/json')
         end
       end
@@ -232,8 +232,21 @@ RSpec.describe API::UsersController do
           }, session: valid_session
           error_messages = JSON.parse(last_response.body)['message']
           expect(last_response.status).to eq(400)
-          expect(error_messages.count).to eq(1)
+          expect(error_messages.count).to eq(2)
           expect(error_messages[0]).to eq('Email can\'t be blank')
+          expect(last_response.content_type).to eq('application/json')
+        end
+      end
+
+      context 'with wrong format email' do
+        it 'renders a JSON response with errors' do
+          put "/users/#{user.id}", {
+            user: new_attributes.merge({ email: 'not_an_email' })
+          }, session: valid_session
+          error_messages = JSON.parse(last_response.body)['message']
+          expect(last_response.status).to eq(400)
+          expect(error_messages.count).to eq(1)
+          expect(error_messages[0]).to eq('Email is invalid')
           expect(last_response.content_type).to eq('application/json')
         end
       end

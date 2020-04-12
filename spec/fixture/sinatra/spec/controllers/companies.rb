@@ -13,19 +13,16 @@ RSpec.describe API::CompaniesController do
     }
   end
 
-  # Missing required field params
-
-  let(:invalid_missing_required_param_name) do
-    {
-      web_site: Faker::Lorem.sentence,
-    }
-  end
-
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
   # CompaniesController. Be sure to keep this updated too.
   let(:valid_session) { {} }
   let!(:company) { create(:company) }
+  let(:valid_attributes) do
+    build(:company).attributes.slice(
+      *%w[name web_site]
+    )
+  end
 
   describe 'GET /companies/:id' do
     it 'returns a success response' do
@@ -64,7 +61,7 @@ RSpec.describe API::CompaniesController do
       context 'missing required name' do
         it 'renders a JSON response with errors for the new company' do
           post '/companies', {
-            company: invalid_missing_required_param_name
+            company: valid_attributes.reject { |key, val| key == 'name' }
           }, session: valid_session
           expect(last_response.status).to eq(400)
           expect(last_response.content_type).to eq('application/json')
@@ -74,26 +71,20 @@ RSpec.describe API::CompaniesController do
   end
 
   describe 'PUT /companies/:id' do
-    let(:new_attributes) do
-      build(:company).attributes.slice(
-        *%w[name web_site]
-      )
-    end
-
     context 'with valid params' do
       before do
         put "/companies/#{company.id}", {
-          company: new_attributes
+          company: valid_attributes
         }, session: valid_session
       end
 
       it 'updates the requested company' do
         company.reload
         expect(company.name).to eq(
-          new_attributes['name']
+          valid_attributes['name']
         )
         expect(company.web_site).to eq(
-          new_attributes['web_site']
+          valid_attributes['web_site']
         )
       end
 
@@ -107,7 +98,7 @@ RSpec.describe API::CompaniesController do
       context 'with name set to nil' do
         it 'renders a JSON response with errors' do
           put "/companies/#{company.id}", {
-            company: new_attributes.merge({ name: nil })
+            company: valid_attributes.merge({ name: nil })
           }, session: valid_session
           error_messages = JSON.parse(last_response.body)['message']
           expect(last_response.status).to eq(400)

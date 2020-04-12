@@ -14,20 +14,16 @@ RSpec.describe API::ProductsController do
     }
   end
 
-  # Missing required field params
-
-  let(:invalid_missing_required_param_name) do
-    {
-      first_day_on_market: Faker::Date.between(from: 2.days.ago, to: Date.today),
-      price: Faker::Number.decimal(l_digits: 2),
-    }
-  end
-
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
   # ProductsController. Be sure to keep this updated too.
   let(:valid_session) { {} }
   let!(:product) { create(:product) }
+  let(:valid_attributes) do
+    build(:product).attributes.slice(
+      *%w[first_day_on_market name price]
+    )
+  end
 
   describe 'GET /products' do
     it 'returns a success response' do
@@ -73,7 +69,7 @@ RSpec.describe API::ProductsController do
       context 'missing required name' do
         it 'renders a JSON response with errors for the new product' do
           post '/products', {
-            product: invalid_missing_required_param_name
+            product: valid_attributes.reject { |key, val| key == 'name' }
           }, session: valid_session
           expect(last_response.status).to eq(400)
           expect(last_response.content_type).to eq('application/json')
@@ -83,29 +79,23 @@ RSpec.describe API::ProductsController do
   end
 
   describe 'PUT /products/:id' do
-    let(:new_attributes) do
-      build(:product).attributes.slice(
-        *%w[first_day_on_market name price]
-      )
-    end
-
     context 'with valid params' do
       before do
         put "/products/#{product.id}", {
-          product: new_attributes
+          product: valid_attributes
         }, session: valid_session
       end
 
       it 'updates the requested product' do
         product.reload
         expect(product.first_day_on_market).to eq(
-          new_attributes['first_day_on_market']
+          valid_attributes['first_day_on_market']
         )
         expect(product.name).to eq(
-          new_attributes['name']
+          valid_attributes['name']
         )
         expect(product.price).to eq(
-          new_attributes['price']
+          valid_attributes['price']
         )
       end
 
@@ -119,7 +109,7 @@ RSpec.describe API::ProductsController do
       context 'with name set to nil' do
         it 'renders a JSON response with errors' do
           put "/products/#{product.id}", {
-            product: new_attributes.merge({ name: nil })
+            product: valid_attributes.merge({ name: nil })
           }, session: valid_session
           error_messages = JSON.parse(last_response.body)['message']
           expect(last_response.status).to eq(400)

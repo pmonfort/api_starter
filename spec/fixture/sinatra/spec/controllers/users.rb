@@ -18,57 +18,16 @@ RSpec.describe API::UsersController do
     }
   end
 
-  # Missing required field params
-
-  let(:invalid_missing_required_param_birthday) do
-    {
-      age: Faker::Number.number(digits: 2),
-      company_id: create(:company).id,
-      email: Faker::Internet.email,
-      first_name: Faker::Name.name,
-      last_name: Faker::Name.name,
-      password: Faker::Internet.password,
-    }
-  end
-
-  let(:invalid_missing_required_param_company_id) do
-    {
-      age: Faker::Number.number(digits: 2),
-      birthday: Faker::Date.birthday(min_age: 18, max_age: 65),
-      email: Faker::Internet.email,
-      first_name: Faker::Name.name,
-      last_name: Faker::Name.name,
-      password: Faker::Internet.password,
-    }
-  end
-
-  let(:invalid_missing_required_param_email) do
-    {
-      age: Faker::Number.number(digits: 2),
-      birthday: Faker::Date.birthday(min_age: 18, max_age: 65),
-      company_id: create(:company).id,
-      first_name: Faker::Name.name,
-      last_name: Faker::Name.name,
-      password: Faker::Internet.password,
-    }
-  end
-
-  let(:invalid_missing_required_param_password) do
-    {
-      age: Faker::Number.number(digits: 2),
-      birthday: Faker::Date.birthday(min_age: 18, max_age: 65),
-      company_id: create(:company).id,
-      email: Faker::Internet.email,
-      first_name: Faker::Name.name,
-      last_name: Faker::Name.name,
-    }
-  end
-
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
   # UsersController. Be sure to keep this updated too.
   let(:valid_session) { {} }
   let!(:user) { create(:user) }
+  let(:valid_attributes) do
+    build(:user).attributes.slice(
+      *%w[age birthday company_id email first_name last_name password]
+    )
+  end
 
   describe 'GET /users' do
     it 'returns a success response' do
@@ -114,7 +73,7 @@ RSpec.describe API::UsersController do
       context 'missing required birthday' do
         it 'renders a JSON response with errors for the new user' do
           post '/users', {
-            user: invalid_missing_required_param_birthday
+            user: valid_attributes.reject { |key, val| key == 'birthday' }
           }, session: valid_session
           expect(last_response.status).to eq(400)
           expect(last_response.content_type).to eq('application/json')
@@ -124,7 +83,7 @@ RSpec.describe API::UsersController do
       context 'missing required company_id' do
         it 'renders a JSON response with errors for the new user' do
           post '/users', {
-            user: invalid_missing_required_param_company_id
+            user: valid_attributes.reject { |key, val| key == 'company_id' }
           }, session: valid_session
           expect(last_response.status).to eq(400)
           expect(last_response.content_type).to eq('application/json')
@@ -134,7 +93,7 @@ RSpec.describe API::UsersController do
       context 'missing required email' do
         it 'renders a JSON response with errors for the new user' do
           post '/users', {
-            user: invalid_missing_required_param_email
+            user: valid_attributes.reject { |key, val| key == 'email' }
           }, session: valid_session
           expect(last_response.status).to eq(400)
           expect(last_response.content_type).to eq('application/json')
@@ -144,7 +103,7 @@ RSpec.describe API::UsersController do
       context 'missing required password' do
         it 'renders a JSON response with errors for the new user' do
           post '/users', {
-            user: invalid_missing_required_param_password
+            user: valid_attributes.reject { |key, val| key == 'password' }
           }, session: valid_session
           expect(last_response.status).to eq(400)
           expect(last_response.content_type).to eq('application/json')
@@ -154,41 +113,35 @@ RSpec.describe API::UsersController do
   end
 
   describe 'PUT /users/:id' do
-    let(:new_attributes) do
-      build(:user).attributes.slice(
-        *%w[age birthday company_id email first_name last_name password]
-      )
-    end
-
     context 'with valid params' do
       before do
         put "/users/#{user.id}", {
-          user: new_attributes
+          user: valid_attributes
         }, session: valid_session
       end
 
       it 'updates the requested user' do
         user.reload
         expect(user.age).to eq(
-          new_attributes['age']
+          valid_attributes['age']
         )
         expect(user.birthday).to eq(
-          new_attributes['birthday']
+          valid_attributes['birthday']
         )
         expect(user.company_id).to eq(
-          new_attributes['company_id']
+          valid_attributes['company_id']
         )
         expect(user.email).to eq(
-          new_attributes['email']
+          valid_attributes['email']
         )
         expect(user.first_name).to eq(
-          new_attributes['first_name']
+          valid_attributes['first_name']
         )
         expect(user.last_name).to eq(
-          new_attributes['last_name']
+          valid_attributes['last_name']
         )
         expect(user.password).to eq(
-          new_attributes['password']
+          valid_attributes['password']
         )
       end
 
@@ -202,7 +155,7 @@ RSpec.describe API::UsersController do
       context 'with birthday set to nil' do
         it 'renders a JSON response with errors' do
           put "/users/#{user.id}", {
-            user: new_attributes.merge({ birthday: nil })
+            user: valid_attributes.merge({ birthday: nil })
           }, session: valid_session
           error_messages = JSON.parse(last_response.body)['message']
           expect(last_response.status).to eq(400)
@@ -215,7 +168,7 @@ RSpec.describe API::UsersController do
       context 'with company_id set to nil' do
         it 'renders a JSON response with errors' do
           put "/users/#{user.id}", {
-            user: new_attributes.merge({ company_id: nil })
+            user: valid_attributes.merge({ company_id: nil })
           }, session: valid_session
           error_messages = JSON.parse(last_response.body)['message']
           expect(last_response.status).to eq(400)
@@ -228,7 +181,7 @@ RSpec.describe API::UsersController do
       context 'with email set to nil' do
         it 'renders a JSON response with errors' do
           put "/users/#{user.id}", {
-            user: new_attributes.merge({ email: nil })
+            user: valid_attributes.merge({ email: nil })
           }, session: valid_session
           error_messages = JSON.parse(last_response.body)['message']
           expect(last_response.status).to eq(400)
@@ -238,23 +191,10 @@ RSpec.describe API::UsersController do
         end
       end
 
-      context 'with wrong format email' do
-        it 'renders a JSON response with errors' do
-          put "/users/#{user.id}", {
-            user: new_attributes.merge({ email: 'not_an_email' })
-          }, session: valid_session
-          error_messages = JSON.parse(last_response.body)['message']
-          expect(last_response.status).to eq(400)
-          expect(error_messages.count).to eq(1)
-          expect(error_messages[0]).to eq('Email is invalid')
-          expect(last_response.content_type).to eq('application/json')
-        end
-      end
-
       context 'with password set to nil' do
         it 'renders a JSON response with errors' do
           put "/users/#{user.id}", {
-            user: new_attributes.merge({ password: nil })
+            user: valid_attributes.merge({ password: nil })
           }, session: valid_session
           error_messages = JSON.parse(last_response.body)['message']
           expect(last_response.status).to eq(400)

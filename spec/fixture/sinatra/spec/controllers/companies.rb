@@ -76,7 +76,7 @@ RSpec.describe API::CompaniesController do
   describe 'PUT /companies/:id' do
     let(:new_attributes) do
       build(:company).attributes.slice(
-        %w[name web_site]
+        *%w[name web_site]
       )
     end
 

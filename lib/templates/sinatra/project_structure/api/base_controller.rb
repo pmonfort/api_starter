@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'sinatra/base'
 require "sinatra/required_params"
 
 module API

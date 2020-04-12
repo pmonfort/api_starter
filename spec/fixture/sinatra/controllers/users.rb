@@ -42,9 +42,9 @@ module API
       halt 404
     end
 
-    def product_params
+    def user_params
       params['user'].slice(
-        %w[age birthday company_id email first_name last_name password]
+        *%w[age birthday company_id email first_name last_name password]
       )
     end
   end

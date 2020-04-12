@@ -85,7 +85,7 @@ RSpec.describe API::ProductsController do
   describe 'PUT /products/:id' do
     let(:new_attributes) do
       build(:product).attributes.slice(
-        %w[first_day_on_market name price]
+        *%w[first_day_on_market name price]
       )
     end
 

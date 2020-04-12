@@ -156,7 +156,7 @@ RSpec.describe API::UsersController do
   describe 'PUT /users/:id' do
     let(:new_attributes) do
       build(:user).attributes.slice(
-        %w[age birthday company_id email first_name last_name password]
+        *%w[age birthday company_id email first_name last_name password]
       )
     end
 

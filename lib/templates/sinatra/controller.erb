@@ -59,9 +59,9 @@ module API
 <% end %>
 <% end %>
 <% if actions & %w[create update] %>
-    def product_params
+    def <%= name_downcase %>_params
       params['<%= name_downcase %>'].slice(
-        %w[<%= fields.map { |field| field['name'] }.join(' ') %>]
+        *%w[<%= fields.map { |field| field['name'] }.join(' ') %>]
       )
     end
   end

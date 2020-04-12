@@ -33,9 +33,9 @@ module API
       halt 404
     end
 
-    def product_params
+    def company_params
       params['company'].slice(
-        %w[name web_site]
+        *%w[name web_site]
       )
     end
   end

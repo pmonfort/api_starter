@@ -110,7 +110,7 @@ RSpec.describe <%= "API::#{plural_name.capitalize}Controller" %> do
   describe 'PUT <%= "/#{plural_name}/:id" %>' do
     let(:new_attributes) do
       build(:<%= name_downcase %>).attributes.slice(
-        %w[<%= fields.map { |field| field['name'] }.join(' ') %>]
+        *%w[<%= fields.map { |field| field['name'] }.join(' ') %>]
       )
     end
 

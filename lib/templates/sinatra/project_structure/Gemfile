@@ -11,7 +11,7 @@ gem 'require_all'
 gem 'shotgun'
 gem 'sinatra'
 gem 'sinatra-activerecord'
-gem 'sinatra-contrib'
+gem 'sinatra-contrib', require: false
 
 group :test do
   gem 'byebug'

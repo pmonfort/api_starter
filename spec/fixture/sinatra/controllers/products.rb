@@ -44,7 +44,7 @@ module API
 
     def product_params
       params['product'].slice(
-        %w[first_day_on_market name price]
+        *%w[first_day_on_market name price]
       )
     end
   end

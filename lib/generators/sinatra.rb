@@ -15,7 +15,7 @@ module Generators
           plural_name: resource['name'].downcase.pluralize,
           name_downcase: resource['name'].downcase
         })
-        create_controller(resource)
+        create_controller(resource, File.join(base_target_ps_path, 'api'))
         create_migration(resource)
         create_model(resource, File.join(base_target_ps_path, 'models'))
         create_specs(resource)
@@ -49,19 +49,6 @@ module Generators
         resource,
         File.join(BASE_TEMPLATE_PATH, 'spec', 'routing.erb'),
         File.join(base_target_ps_path, 'spec', 'routing', file_name)
-      )
-    end
-
-    def create_controller(resource)
-      file_name = "#{resource['plural_name']}_controller.rb"
-      resource.merge!(
-        required_fields: resource['fields'].select { |field| field['required'] == 'true' }
-      )
-
-      create_file_from_template(
-        resource,
-        File.join(BASE_TEMPLATE_PATH, 'controller.erb'),
-        File.join(base_target_ps_path, 'api', file_name)
       )
     end
   end

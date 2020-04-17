@@ -12,7 +12,7 @@ module Generators
         index_of_delete = resource['actions'].find_index('delete')
         # Patch delete to Rails destroy
         resource['actions'][index_of_delete] = 'destroy' if index_of_delete
-        create_controller(resource)
+        create_controller(resource, File.join(base_target_ps_path, 'app', 'controllers'))
         create_migration(resource)
         create_model(resource, File.join(base_target_ps_path, 'app', 'models'))
         create_specs(resource)
@@ -27,17 +27,6 @@ module Generators
         { resources: resources },
         File.join(BASE_TEMPLATE_PATH, 'routes.erb'),
         File.join(base_target_ps_path, 'config', 'routes.rb')
-      )
-    end
-
-    def create_controller(resource)
-      file_name = "#{resource['plural_name']}_controller.rb"
-      resource['name_downcase'] = resource['name'].downcase
-
-      create_file_from_template(
-        resource,
-        File.join(BASE_TEMPLATE_PATH, 'controller.erb'),
-        File.join(base_target_ps_path, 'app', 'controllers', file_name)
       )
     end
 

@@ -26,25 +26,17 @@ require 'rails_helper'
 # `rails-controller-testing` gem.
 
 RSpec.describe ProductsController, type: :controller do
-
   # This should return the minimal set of attributes required to create a valid
   # Product. As you add validations to Product, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    {
-      first_day_on_market: Faker::Date.between(from: 2.days.ago, to: Date.today),
-      name: Faker::Name.name,
-      price: Faker::Number.decimal(l_digits: 2)
-    }
-  end
-
-  # Missing required field params
-
-  let(:invalid_missing_required_param_name) do
-    {
-      first_day_on_market: Faker::Date.between(from: 2.days.ago, to: Date.today),
-      price: Faker::Number.decimal(l_digits: 2),
-    }
+    build(:product).attributes.slice(
+      *%w[
+        first_day_on_market
+        name
+        price
+      ]
+    )
   end
 
   # This should return the minimal set of values that should be in the session
@@ -62,8 +54,15 @@ RSpec.describe ProductsController, type: :controller do
 
   describe 'GET #show' do
     it 'returns a success response' do
-      get :show, params: {id: product.id}, session: valid_session
+      get :show, params: { id: product.id }, session: valid_session
       expect(response).to be_successful
+    end
+
+    describe 'wrong id' do
+      it '404' do
+        get :show, params: { id: -1 }, session: valid_session
+        expect(response.status).to eq(404)
+      end
     end
   end
 
@@ -71,12 +70,14 @@ RSpec.describe ProductsController, type: :controller do
     context 'with valid params' do
       it 'creates a new Product' do
         expect do
-          post :create, params: {product: valid_attributes}, session: valid_session
-        end.to change(Product, :count).by(1)
+          post :create, params: { product: valid_attributes }, session: valid_session
+        end.to change { Product.count }.by(1)
       end
 
       it 'renders a JSON response with the new product' do
-        post :create, params: {product: valid_attributes}, session: valid_session
+        post :create, params: {
+          product: valid_attributes
+        }, session: valid_session
         expect(response).to have_http_status(:created)
         expect(response.content_type).to eq('application/json; charset=utf-8')
         expect(response.location).to eq(product_url(Product.last))
@@ -87,7 +88,7 @@ RSpec.describe ProductsController, type: :controller do
       context 'missing required name' do
         it 'renders a JSON response with errors for the new product' do
           post :create, params: {
-            product: invalid_missing_required_param_name
+            product: valid_attributes.reject { |key, _| key == 'name' }
           }, session: valid_session
           expect(response).to have_http_status(:unprocessable_entity)
           expect(response.content_type).to eq('application/json; charset=utf-8')
@@ -98,46 +99,39 @@ RSpec.describe ProductsController, type: :controller do
 
   describe 'PUT #update' do
     context 'with valid params' do
-      let(:new_attributes) {
-        skip('Add a hash of attributes valid for your model')
-      }
+      before do
+        put :update, params: {
+          id: product.id,
+          product: valid_attributes.merge(id: product.id)
+        }, session: valid_session
+      end
 
       it 'updates the requested product' do
-        skip
-        product = Product.create! valid_attributes
-        put :update, params: {id: product.to_param, product: new_attributes}, session: valid_session
         product.reload
-        skip('Add assertions for updated state')
+        expect(
+          product.attributes.select do |key, _|
+            valid_attributes.keys.include?(key)
+          end
+        ).to eq(valid_attributes)
       end
 
       it 'renders a JSON response with the product' do
-        skip
-        product = Product.create! valid_attributes
-
-        put :update, params: {id: product.to_param, product: valid_attributes}, session: valid_session
-        expect(response).to have_http_status(:ok)
-        expect(response.content_type).to eq('application/json; charset=utf-8')
-      end
-    end
-
-    context 'with invalid params' do
-      it 'renders a JSON response with errors for the product' do
-        skip
-        product = Product.create! valid_attributes
-
-        put :update, params: {id: product.to_param, product: invalid_attributes}, session: valid_session
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to be_successful
         expect(response.content_type).to eq('application/json; charset=utf-8')
       end
     end
 
     describe 'with invalid params' do
-      context 'missing required name' do
-        it 'renders a JSON response with errors for the new product' do
-          post :create, params: {
-            product: invalid_missing_required_param_name
+      context 'with name set to nil' do
+        it 'renders a JSON response with errors' do
+          put :update, params: {
+            id: product.id,
+            product: valid_attributes.merge({ 'name' => nil })
           }, session: valid_session
+          error_messages = JSON.parse(response.body)
           expect(response).to have_http_status(:unprocessable_entity)
+          expect(error_messages.count).to eq(1)
+          expect(error_messages).to include('Name can\'t be blank')
           expect(response.content_type).to eq('application/json; charset=utf-8')
         end
       end
@@ -146,9 +140,9 @@ RSpec.describe ProductsController, type: :controller do
 
   describe 'DELETE #destroy' do
     it 'destroys the requested product' do
-      expect {
-        delete :destroy, params: {id: product.id}, session: valid_session
-      }.to change(Product, :count).by(-1)
+      expect do
+        delete :destroy, params: { id: product.id }, session: valid_session
+      end.to change { Product.count }.by(-1)
     end
   end
 end

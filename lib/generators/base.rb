@@ -44,7 +44,10 @@ module Generators
 
     def create_controller(resource, target_folder_path)
       file_name = "#{resource['plural_name']}_controller.rb"
-      resource['name_downcase'] = resource['name'].downcase
+      resource.merge!(
+        required_fields: resource['fields'].select { |field| field['required'] == 'true' },
+        name_downcase: resource['name'].downcase
+      )
 
       create_file_from_template(
         resource,

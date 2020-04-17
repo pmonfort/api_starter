@@ -26,41 +26,22 @@ require 'rails_helper'
 # `rails-controller-testing` gem.
 
 RSpec.describe <%= "#{plural_name.capitalize}Controller" %>, type: :controller do
-
   # This should return the minimal set of attributes required to create a valid
   # <%= name %>. As you add validations to <%= name %>, be sure to
   # adjust the attributes here as well.
+<% # TODO Add a spec with a resource without create and update actions %>
+<% unless (actions & %w[create update]).empty? %>
   let(:valid_attributes) do
-    {
-<% fields.each_with_index do |field, index| %>
-<% if index == fields.size - 1 %>
-      <%= yield(field) %>
-<% else %>
-      <%= "#{yield(field)}," %>
+    build(:<%= name_downcase %>).attributes.slice(
+      *%w[
+<% fields.map do |field| %>
+        <%= field['name'] %>
 <% end %>
-<% end %>
-    }
+      ]
+    )
   end
+<% end %>
 
-<% required_fields = fields.select { |field| field['required'] == 'true' } %>
-<% if actions.include?('create') && !required_fields.empty? %>
-  # Missing required field params
-
-<% required_fields.each do |required_field| %>
-  let(:invalid_missing_required_param_<%= required_field['name'].downcase %>) do
-    {
-<% fields.reject{ |field| field == required_field }.each_with_index do |field, index| %>
-<% if index == fields.size - 1 %>
-      <%= yield(field) %>
-<% else %>
-      <%= "#{yield(field)}," %>
-<% end %>
-<% end %>
-    }
-  end
-
-<% end %>
-<% end %>
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
   # <%= "#{plural_name.capitalize}Controller" %>. Be sure to keep this updated too.
@@ -79,8 +60,15 @@ RSpec.describe <%= "#{plural_name.capitalize}Controller" %>, type: :controller d
 <% if actions.include?('show') %>
   describe 'GET #show' do
     it 'returns a success response' do
-      get :show, params: {id: <%= name_downcase %>.id}, session: valid_session
+      get :show, params: { id: <%= name_downcase %>.id }, session: valid_session
       expect(response).to be_successful
+    end
+
+    describe 'wrong id' do
+      it '404' do
+        get :show, params: { id: -1 }, session: valid_session
+        expect(response.status).to eq(404)
+      end
     end
   end
 
@@ -90,12 +78,14 @@ RSpec.describe <%= "#{plural_name.capitalize}Controller" %>, type: :controller d
     context 'with valid params' do
       it 'creates a new <%= name %>' do
         expect do
-          post :create, params: {<%= name_downcase %>: valid_attributes}, session: valid_session
-        end.to change(<%= name %>, :count).by(1)
+          post :create, params: { <%= name_downcase %>: valid_attributes }, session: valid_session
+        end.to change { <%= name %>.count }.by(1)
       end
 
       it 'renders a JSON response with the new <%= name_downcase %>' do
-        post :create, params: {<%= name_downcase %>: valid_attributes}, session: valid_session
+        post :create, params: {
+          <%= name_downcase %>: valid_attributes
+        }, session: valid_session
         expect(response).to have_http_status(:created)
         expect(response.content_type).to eq('application/json; charset=utf-8')
         expect(response.location).to eq(<%= name_downcase %>_url(<%= name %>.last))
@@ -107,7 +97,7 @@ RSpec.describe <%= "#{plural_name.capitalize}Controller" %>, type: :controller d
       context 'missing required <%= field['name'].downcase %>' do
         it 'renders a JSON response with errors for the new <%= name_downcase %>' do
           post :create, params: {
-            <%= name_downcase %>: invalid_missing_required_param_<%= field['name'].downcase %>
+            <%= "#{name_downcase}" %>: valid_attributes.reject { |key, _| key == '<%= field['name'].downcase %>' }
           }, session: valid_session
           expect(response).to have_http_status(:unprocessable_entity)
           expect(response.content_type).to eq('application/json; charset=utf-8')
@@ -124,47 +114,45 @@ RSpec.describe <%= "#{plural_name.capitalize}Controller" %>, type: :controller d
 <% if actions.include?('update') %>
   describe 'PUT #update' do
     context 'with valid params' do
-      let(:new_attributes) {
-        skip('Add a hash of attributes valid for your model')
-      }
+      before do
+        put :update, params: {
+          id: <%= name_downcase %>.id,
+          <%= "#{name_downcase}" %>: valid_attributes.merge(id: <%= name_downcase %>.id)
+        }, session: valid_session
+      end
 
       it 'updates the requested <%= name_downcase %>' do
-        skip
-        <%= name_downcase %> = <%= name %>.create! valid_attributes
-        put :update, params: {id: <%= name.downcase %>.to_param, <%= name_downcase %>: new_attributes}, session: valid_session
         <%= name_downcase %>.reload
-        skip('Add assertions for updated state')
+        expect(
+          <%= name_downcase %>.attributes.select do |key, _|
+            valid_attributes.keys.include?(key)
+          end
+        ).to eq(valid_attributes)
       end
 
       it 'renders a JSON response with the <%= name_downcase %>' do
-        skip
-        <%= name_downcase %> = <%= name %>.create! valid_attributes
-
-        put :update, params: {id: <%= name_downcase %>.to_param, <%= name_downcase %>: valid_attributes}, session: valid_session
-        expect(response).to have_http_status(:ok)
-        expect(response.content_type).to eq('application/json; charset=utf-8')
-      end
-    end
-
-    context 'with invalid params' do
-      it 'renders a JSON response with errors for the <%= name_downcase %>' do
-        skip
-        <%= name_downcase %> = <%= name %>.create! valid_attributes
-
-        put :update, params: {id: <%= name_downcase %>.to_param, <%= name_downcase %>: invalid_attributes}, session: valid_session
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to be_successful
         expect(response.content_type).to eq('application/json; charset=utf-8')
       end
     end
 
     describe 'with invalid params' do
 <% required_fields.each_with_index do |field, index| %>
-      context 'missing required <%= field['name'].downcase %>' do
-        it 'renders a JSON response with errors for the new <%= name_downcase %>' do
-          post :create, params: {
-            <%= name_downcase %>: invalid_missing_required_param_<%= field['name'].downcase %>
+<% field_name = field['type'] == 'foreign_key' ? field['name'].gsub('_id', '') : field['name'] %>
+      context 'with <%= field['name'].downcase %> set to nil' do
+        it 'renders a JSON response with errors' do
+          put :update, params: {
+            id: <%= name_downcase %>.id,
+            <%= "#{name_downcase}" %>: valid_attributes.merge({ '<%= field['name'].downcase %>' => nil })
           }, session: valid_session
+          error_messages = JSON.parse(response.body)
           expect(response).to have_http_status(:unprocessable_entity)
+<% if %w[email foreign_key].include?(field['type']) %>
+          expect(error_messages.count).to eq(2)
+<% else %>
+          expect(error_messages.count).to eq(1)
+<% end %>
+          expect(error_messages).to include('<%= field_name.capitalize %> can\'t be blank')
           expect(response.content_type).to eq('application/json; charset=utf-8')
         end
       end
@@ -181,9 +169,9 @@ RSpec.describe <%= "#{plural_name.capitalize}Controller" %>, type: :controller d
 <% if actions.include?('destroy') %>
   describe 'DELETE #destroy' do
     it 'destroys the requested <%= name_downcase %>' do
-      expect {
-        delete :destroy, params: {id: <%= name_downcase %>.id}, session: valid_session
-      }.to change(<%= name %>, :count).by(-1)
+      expect do
+        delete :destroy, params: { id: <%= name_downcase %>.id }, session: valid_session
+      end.to change { <%= name %>.count }.by(-1)
     end
   end
 <% end %>

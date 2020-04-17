@@ -29,7 +29,7 @@ class <%= "#{plural_name.capitalize}Controller" %> < ApplicationController
     if @<%= name_downcase %>.save
       render json: @<%= name_downcase %>, status: :created, location: @<%= name_downcase %>
     else
-      render json: @<%= name_downcase %>.errors, status: :unprocessable_entity
+      render json: @<%= name_downcase %>.errors.full_messages, status: :unprocessable_entity
     end
   end
 
@@ -40,7 +40,7 @@ class <%= "#{plural_name.capitalize}Controller" %> < ApplicationController
     if @<%= name_downcase %>.update(<%= name_downcase %>_params)
       render json: @<%= name_downcase %>
     else
-      render json: @<%= name_downcase %>.errors, status: :unprocessable_entity
+      render json: @<%= name_downcase %>.errors.full_messages, status: :unprocessable_entity
     end
   end
 
@@ -57,6 +57,8 @@ class <%= "#{plural_name.capitalize}Controller" %> < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_<%= name_downcase %>
       @<%= name_downcase %> = <%= name %>.find(params[:id])
+    rescue
+      render json: { error: 'not-found' }, status: :not_found
     end
 
 <% end %>

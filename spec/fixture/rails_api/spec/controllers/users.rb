@@ -26,66 +26,21 @@ require 'rails_helper'
 # `rails-controller-testing` gem.
 
 RSpec.describe UsersController, type: :controller do
-
   # This should return the minimal set of attributes required to create a valid
   # User. As you add validations to User, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    {
-      age: Faker::Number.number(digits: 2),
-      birthday: Faker::Date.birthday(min_age: 18, max_age: 65),
-      company_id: create(:company).id,
-      email: Faker::Internet.email,
-      first_name: Faker::Name.name,
-      last_name: Faker::Name.name,
-      password: Faker::Internet.password
-    }
-  end
-
-  # Missing required field params
-
-  let(:invalid_missing_required_param_birthday) do
-    {
-      age: Faker::Number.number(digits: 2),
-      company_id: create(:company).id,
-      email: Faker::Internet.email,
-      first_name: Faker::Name.name,
-      last_name: Faker::Name.name,
-      password: Faker::Internet.password,
-    }
-  end
-
-  let(:invalid_missing_required_param_company_id) do
-    {
-      age: Faker::Number.number(digits: 2),
-      birthday: Faker::Date.birthday(min_age: 18, max_age: 65),
-      email: Faker::Internet.email,
-      first_name: Faker::Name.name,
-      last_name: Faker::Name.name,
-      password: Faker::Internet.password,
-    }
-  end
-
-  let(:invalid_missing_required_param_email) do
-    {
-      age: Faker::Number.number(digits: 2),
-      birthday: Faker::Date.birthday(min_age: 18, max_age: 65),
-      company_id: create(:company).id,
-      first_name: Faker::Name.name,
-      last_name: Faker::Name.name,
-      password: Faker::Internet.password,
-    }
-  end
-
-  let(:invalid_missing_required_param_password) do
-    {
-      age: Faker::Number.number(digits: 2),
-      birthday: Faker::Date.birthday(min_age: 18, max_age: 65),
-      company_id: create(:company).id,
-      email: Faker::Internet.email,
-      first_name: Faker::Name.name,
-      last_name: Faker::Name.name,
-    }
+    build(:user).attributes.slice(
+      *%w[
+        age
+        birthday
+        company_id
+        email
+        first_name
+        last_name
+        password
+      ]
+    )
   end
 
   # This should return the minimal set of values that should be in the session
@@ -103,8 +58,15 @@ RSpec.describe UsersController, type: :controller do
 
   describe 'GET #show' do
     it 'returns a success response' do
-      get :show, params: {id: user.id}, session: valid_session
+      get :show, params: { id: user.id }, session: valid_session
       expect(response).to be_successful
+    end
+
+    describe 'wrong id' do
+      it '404' do
+        get :show, params: { id: -1 }, session: valid_session
+        expect(response.status).to eq(404)
+      end
     end
   end
 
@@ -112,12 +74,14 @@ RSpec.describe UsersController, type: :controller do
     context 'with valid params' do
       it 'creates a new User' do
         expect do
-          post :create, params: {user: valid_attributes}, session: valid_session
-        end.to change(User, :count).by(1)
+          post :create, params: { user: valid_attributes }, session: valid_session
+        end.to change { User.count }.by(1)
       end
 
       it 'renders a JSON response with the new user' do
-        post :create, params: {user: valid_attributes}, session: valid_session
+        post :create, params: {
+          user: valid_attributes
+        }, session: valid_session
         expect(response).to have_http_status(:created)
         expect(response.content_type).to eq('application/json; charset=utf-8')
         expect(response.location).to eq(user_url(User.last))
@@ -128,7 +92,7 @@ RSpec.describe UsersController, type: :controller do
       context 'missing required birthday' do
         it 'renders a JSON response with errors for the new user' do
           post :create, params: {
-            user: invalid_missing_required_param_birthday
+            user: valid_attributes.reject { |key, _| key == 'birthday' }
           }, session: valid_session
           expect(response).to have_http_status(:unprocessable_entity)
           expect(response.content_type).to eq('application/json; charset=utf-8')
@@ -138,7 +102,7 @@ RSpec.describe UsersController, type: :controller do
       context 'missing required company_id' do
         it 'renders a JSON response with errors for the new user' do
           post :create, params: {
-            user: invalid_missing_required_param_company_id
+            user: valid_attributes.reject { |key, _| key == 'company_id' }
           }, session: valid_session
           expect(response).to have_http_status(:unprocessable_entity)
           expect(response.content_type).to eq('application/json; charset=utf-8')
@@ -148,7 +112,7 @@ RSpec.describe UsersController, type: :controller do
       context 'missing required email' do
         it 'renders a JSON response with errors for the new user' do
           post :create, params: {
-            user: invalid_missing_required_param_email
+            user: valid_attributes.reject { |key, _| key == 'email' }
           }, session: valid_session
           expect(response).to have_http_status(:unprocessable_entity)
           expect(response.content_type).to eq('application/json; charset=utf-8')
@@ -158,7 +122,7 @@ RSpec.describe UsersController, type: :controller do
       context 'missing required password' do
         it 'renders a JSON response with errors for the new user' do
           post :create, params: {
-            user: invalid_missing_required_param_password
+            user: valid_attributes.reject { |key, _| key == 'password' }
           }, session: valid_session
           expect(response).to have_http_status(:unprocessable_entity)
           expect(response.content_type).to eq('application/json; charset=utf-8')
@@ -169,76 +133,81 @@ RSpec.describe UsersController, type: :controller do
 
   describe 'PUT #update' do
     context 'with valid params' do
-      let(:new_attributes) {
-        skip('Add a hash of attributes valid for your model')
-      }
+      before do
+        put :update, params: {
+          id: user.id,
+          user: valid_attributes.merge(id: user.id)
+        }, session: valid_session
+      end
 
       it 'updates the requested user' do
-        skip
-        user = User.create! valid_attributes
-        put :update, params: {id: user.to_param, user: new_attributes}, session: valid_session
         user.reload
-        skip('Add assertions for updated state')
+        expect(
+          user.attributes.select do |key, _|
+            valid_attributes.keys.include?(key)
+          end
+        ).to eq(valid_attributes)
       end
 
       it 'renders a JSON response with the user' do
-        skip
-        user = User.create! valid_attributes
-
-        put :update, params: {id: user.to_param, user: valid_attributes}, session: valid_session
-        expect(response).to have_http_status(:ok)
-        expect(response.content_type).to eq('application/json; charset=utf-8')
-      end
-    end
-
-    context 'with invalid params' do
-      it 'renders a JSON response with errors for the user' do
-        skip
-        user = User.create! valid_attributes
-
-        put :update, params: {id: user.to_param, user: invalid_attributes}, session: valid_session
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to be_successful
         expect(response.content_type).to eq('application/json; charset=utf-8')
       end
     end
 
     describe 'with invalid params' do
-      context 'missing required birthday' do
-        it 'renders a JSON response with errors for the new user' do
-          post :create, params: {
-            user: invalid_missing_required_param_birthday
+      context 'with birthday set to nil' do
+        it 'renders a JSON response with errors' do
+          put :update, params: {
+            id: user.id,
+            user: valid_attributes.merge({ 'birthday' => nil })
           }, session: valid_session
+          error_messages = JSON.parse(response.body)
           expect(response).to have_http_status(:unprocessable_entity)
+          expect(error_messages.count).to eq(1)
+          expect(error_messages).to include('Birthday can\'t be blank')
           expect(response.content_type).to eq('application/json; charset=utf-8')
         end
       end
 
-      context 'missing required company_id' do
-        it 'renders a JSON response with errors for the new user' do
-          post :create, params: {
-            user: invalid_missing_required_param_company_id
+      context 'with company_id set to nil' do
+        it 'renders a JSON response with errors' do
+          put :update, params: {
+            id: user.id,
+            user: valid_attributes.merge({ 'company_id' => nil })
           }, session: valid_session
+          error_messages = JSON.parse(response.body)
           expect(response).to have_http_status(:unprocessable_entity)
+          expect(error_messages.count).to eq(2)
+          expect(error_messages).to include('Company can\'t be blank')
           expect(response.content_type).to eq('application/json; charset=utf-8')
         end
       end
 
-      context 'missing required email' do
-        it 'renders a JSON response with errors for the new user' do
-          post :create, params: {
-            user: invalid_missing_required_param_email
+      context 'with email set to nil' do
+        it 'renders a JSON response with errors' do
+          put :update, params: {
+            id: user.id,
+            user: valid_attributes.merge({ 'email' => nil })
           }, session: valid_session
+          error_messages = JSON.parse(response.body)
           expect(response).to have_http_status(:unprocessable_entity)
+          expect(error_messages.count).to eq(2)
+          expect(error_messages).to include('Email can\'t be blank')
           expect(response.content_type).to eq('application/json; charset=utf-8')
         end
       end
 
-      context 'missing required password' do
-        it 'renders a JSON response with errors for the new user' do
-          post :create, params: {
-            user: invalid_missing_required_param_password
+      context 'with password set to nil' do
+        it 'renders a JSON response with errors' do
+          put :update, params: {
+            id: user.id,
+            user: valid_attributes.merge({ 'password' => nil })
           }, session: valid_session
+          error_messages = JSON.parse(response.body)
           expect(response).to have_http_status(:unprocessable_entity)
+          expect(error_messages.count).to eq(1)
+          expect(error_messages).to include('Password can\'t be blank')
           expect(response.content_type).to eq('application/json; charset=utf-8')
         end
       end
@@ -247,9 +216,9 @@ RSpec.describe UsersController, type: :controller do
 
   describe 'DELETE #destroy' do
     it 'destroys the requested user' do
-      expect {
-        delete :destroy, params: {id: user.id}, session: valid_session
-      }.to change(User, :count).by(-1)
+      expect do
+        delete :destroy, params: { id: user.id }, session: valid_session
+      end.to change { User.count }.by(-1)
     end
   end
 end

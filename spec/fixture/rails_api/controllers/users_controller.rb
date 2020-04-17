@@ -22,7 +22,7 @@ class UsersController < ApplicationController
     if @user.save
       render json: @user, status: :created, location: @user
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: @user.errors.full_messages, status: :unprocessable_entity
     end
   end
 
@@ -31,7 +31,7 @@ class UsersController < ApplicationController
     if @user.update(user_params)
       render json: @user
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: @user.errors.full_messages, status: :unprocessable_entity
     end
   end
 
@@ -44,6 +44,8 @@ class UsersController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_user
       @user = User.find(params[:id])
+    rescue
+      render json: { error: 'not-found' }, status: :not_found
     end
 
     # Only allow a trusted parameter "white list" through.

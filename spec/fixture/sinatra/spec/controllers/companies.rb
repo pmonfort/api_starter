@@ -7,18 +7,6 @@ RSpec.describe API::CompaniesController do
   # Company. As you add validations to Company, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    {
-      name: Faker::Name.name,
-      web_site: Faker::Lorem.sentence
-    }
-  end
-
-  # This should return the minimal set of values that should be in the session
-  # in order to pass any filters (e.g. authentication) defined in
-  # CompaniesController. Be sure to keep this updated too.
-  let(:valid_session) { {} }
-  let!(:company) { create(:company) }
-  let(:valid_attributes) do
     build(:company).attributes.slice(
       *%w[
         name
@@ -26,6 +14,12 @@ RSpec.describe API::CompaniesController do
       ]
     )
   end
+
+  # This should return the minimal set of values that should be in the session
+  # in order to pass any filters (e.g. authentication) defined in
+  # CompaniesController. Be sure to keep this updated too.
+  let(:valid_session) { {} }
+  let!(:company) { create(:company) }
 
   describe 'GET /companies/:id' do
     it 'returns a success response' do

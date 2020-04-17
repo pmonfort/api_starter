@@ -15,7 +15,7 @@ class CompaniesController < ApplicationController
     if @company.save
       render json: @company, status: :created, location: @company
     else
-      render json: @company.errors, status: :unprocessable_entity
+      render json: @company.errors.full_messages, status: :unprocessable_entity
     end
   end
 
@@ -24,7 +24,7 @@ class CompaniesController < ApplicationController
     if @company.update(company_params)
       render json: @company
     else
-      render json: @company.errors, status: :unprocessable_entity
+      render json: @company.errors.full_messages, status: :unprocessable_entity
     end
   end
 
@@ -32,6 +32,8 @@ class CompaniesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_company
       @company = Company.find(params[:id])
+    rescue
+      render json: { error: 'not-found' }, status: :not_found
     end
 
     # Only allow a trusted parameter "white list" through.

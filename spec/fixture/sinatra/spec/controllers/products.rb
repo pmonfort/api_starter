@@ -7,19 +7,6 @@ RSpec.describe API::ProductsController do
   # Product. As you add validations to Product, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    {
-      first_day_on_market: Faker::Date.between(from: 2.days.ago, to: Date.today),
-      name: Faker::Name.name,
-      price: Faker::Number.decimal(l_digits: 2)
-    }
-  end
-
-  # This should return the minimal set of values that should be in the session
-  # in order to pass any filters (e.g. authentication) defined in
-  # ProductsController. Be sure to keep this updated too.
-  let(:valid_session) { {} }
-  let!(:product) { create(:product) }
-  let(:valid_attributes) do
     build(:product).attributes.slice(
       *%w[
         first_day_on_market
@@ -28,6 +15,12 @@ RSpec.describe API::ProductsController do
       ]
     )
   end
+
+  # This should return the minimal set of values that should be in the session
+  # in order to pass any filters (e.g. authentication) defined in
+  # ProductsController. Be sure to keep this updated too.
+  let(:valid_session) { {} }
+  let!(:product) { create(:product) }
 
   describe 'GET /products' do
     it 'returns a success response' do

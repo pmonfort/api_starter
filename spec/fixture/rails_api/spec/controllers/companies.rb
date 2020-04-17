@@ -26,23 +26,16 @@ require 'rails_helper'
 # `rails-controller-testing` gem.
 
 RSpec.describe CompaniesController, type: :controller do
-
   # This should return the minimal set of attributes required to create a valid
   # Company. As you add validations to Company, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    {
-      name: Faker::Name.name,
-      web_site: Faker::Lorem.sentence
-    }
-  end
-
-  # Missing required field params
-
-  let(:invalid_missing_required_param_name) do
-    {
-      web_site: Faker::Lorem.sentence,
-    }
+    build(:company).attributes.slice(
+      *%w[
+        name
+        web_site
+      ]
+    )
   end
 
   # This should return the minimal set of values that should be in the session
@@ -53,8 +46,15 @@ RSpec.describe CompaniesController, type: :controller do
 
   describe 'GET #show' do
     it 'returns a success response' do
-      get :show, params: {id: company.id}, session: valid_session
+      get :show, params: { id: company.id }, session: valid_session
       expect(response).to be_successful
+    end
+
+    describe 'wrong id' do
+      it '404' do
+        get :show, params: { id: -1 }, session: valid_session
+        expect(response.status).to eq(404)
+      end
     end
   end
 
@@ -62,12 +62,14 @@ RSpec.describe CompaniesController, type: :controller do
     context 'with valid params' do
       it 'creates a new Company' do
         expect do
-          post :create, params: {company: valid_attributes}, session: valid_session
-        end.to change(Company, :count).by(1)
+          post :create, params: { company: valid_attributes }, session: valid_session
+        end.to change { Company.count }.by(1)
       end
 
       it 'renders a JSON response with the new company' do
-        post :create, params: {company: valid_attributes}, session: valid_session
+        post :create, params: {
+          company: valid_attributes
+        }, session: valid_session
         expect(response).to have_http_status(:created)
         expect(response.content_type).to eq('application/json; charset=utf-8')
         expect(response.location).to eq(company_url(Company.last))
@@ -78,7 +80,7 @@ RSpec.describe CompaniesController, type: :controller do
       context 'missing required name' do
         it 'renders a JSON response with errors for the new company' do
           post :create, params: {
-            company: invalid_missing_required_param_name
+            company: valid_attributes.reject { |key, _| key == 'name' }
           }, session: valid_session
           expect(response).to have_http_status(:unprocessable_entity)
           expect(response.content_type).to eq('application/json; charset=utf-8')
@@ -89,46 +91,39 @@ RSpec.describe CompaniesController, type: :controller do
 
   describe 'PUT #update' do
     context 'with valid params' do
-      let(:new_attributes) {
-        skip('Add a hash of attributes valid for your model')
-      }
+      before do
+        put :update, params: {
+          id: company.id,
+          company: valid_attributes.merge(id: company.id)
+        }, session: valid_session
+      end
 
       it 'updates the requested company' do
-        skip
-        company = Company.create! valid_attributes
-        put :update, params: {id: company.to_param, company: new_attributes}, session: valid_session
         company.reload
-        skip('Add assertions for updated state')
+        expect(
+          company.attributes.select do |key, _|
+            valid_attributes.keys.include?(key)
+          end
+        ).to eq(valid_attributes)
       end
 
       it 'renders a JSON response with the company' do
-        skip
-        company = Company.create! valid_attributes
-
-        put :update, params: {id: company.to_param, company: valid_attributes}, session: valid_session
-        expect(response).to have_http_status(:ok)
-        expect(response.content_type).to eq('application/json; charset=utf-8')
-      end
-    end
-
-    context 'with invalid params' do
-      it 'renders a JSON response with errors for the company' do
-        skip
-        company = Company.create! valid_attributes
-
-        put :update, params: {id: company.to_param, company: invalid_attributes}, session: valid_session
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to be_successful
         expect(response.content_type).to eq('application/json; charset=utf-8')
       end
     end
 
     describe 'with invalid params' do
-      context 'missing required name' do
-        it 'renders a JSON response with errors for the new company' do
-          post :create, params: {
-            company: invalid_missing_required_param_name
+      context 'with name set to nil' do
+        it 'renders a JSON response with errors' do
+          put :update, params: {
+            id: company.id,
+            company: valid_attributes.merge({ 'name' => nil })
           }, session: valid_session
+          error_messages = JSON.parse(response.body)
           expect(response).to have_http_status(:unprocessable_entity)
+          expect(error_messages.count).to eq(1)
+          expect(error_messages).to include('Name can\'t be blank')
           expect(response.content_type).to eq('application/json; charset=utf-8')
         end
       end

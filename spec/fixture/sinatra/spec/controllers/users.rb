@@ -7,23 +7,6 @@ RSpec.describe API::UsersController do
   # User. As you add validations to User, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    {
-      age: Faker::Number.number(digits: 2),
-      birthday: Faker::Date.birthday(min_age: 18, max_age: 65),
-      company_id: create(:company).id,
-      email: Faker::Internet.email,
-      first_name: Faker::Name.name,
-      last_name: Faker::Name.name,
-      password: Faker::Internet.password
-    }
-  end
-
-  # This should return the minimal set of values that should be in the session
-  # in order to pass any filters (e.g. authentication) defined in
-  # UsersController. Be sure to keep this updated too.
-  let(:valid_session) { {} }
-  let!(:user) { create(:user) }
-  let(:valid_attributes) do
     build(:user).attributes.slice(
       *%w[
         age
@@ -36,6 +19,12 @@ RSpec.describe API::UsersController do
       ]
     )
   end
+
+  # This should return the minimal set of values that should be in the session
+  # in order to pass any filters (e.g. authentication) defined in
+  # UsersController. Be sure to keep this updated too.
+  let(:valid_session) { {} }
+  let!(:user) { create(:user) }
 
   describe 'GET /users' do
     it 'returns a success response' do

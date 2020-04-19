@@ -16,9 +16,9 @@ class App < Sinatra::Base
   def generator(framework)
     case framework
     when 'RailsAPI'
-      RailsAPI::Generator
+      Ruby::RailsAPI::Generator
     when 'Sinatra'
-      Sinatra::Generator
+      Ruby::Sinatra::Generator
     when 'Rust'
       Rust::Generator
     when 'Elixir'

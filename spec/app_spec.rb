@@ -137,7 +137,7 @@ describe App do
 
       context 'framework Rails API' do
         it_behaves_like 'valid request' do
-          let(:generator) { RailsAPI::Generator }
+          let(:generator) { Ruby::RailsAPI::Generator }
           let(:params) { valid_params }
         end
       end
@@ -145,7 +145,7 @@ describe App do
       context 'framework Sinatra' do
         let(:updated_params) { valid_params.merge({ framework: 'Sinatra' }) }
         it_behaves_like 'valid request' do
-          let(:generator) { Sinatra::Generator }
+          let(:generator) { Ruby::Sinatra::Generator }
           let(:params) { updated_params }
         end
       end

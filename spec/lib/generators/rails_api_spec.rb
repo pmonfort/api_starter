@@ -35,7 +35,7 @@ shared_examples 'generated file' do |type|
   end
 end
 
-describe RailsAPI::Generator do
+describe Ruby::RailsAPI::Generator do
   let(:valid_params) do
     ActiveSupport::HashWithIndifferentAccess.new(
       {
@@ -150,7 +150,7 @@ describe RailsAPI::Generator do
     )
   end
 
-  let!(:result_path) { RailsAPI::Generator.new(valid_params).generate }
+  let!(:result_path) { Ruby::RailsAPI::Generator.new(valid_params).generate }
 
   context 'valid params' do
     describe 'controllers' do

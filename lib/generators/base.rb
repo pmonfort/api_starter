@@ -76,7 +76,37 @@ module Generators
       )
     end
 
-    # Factories
+    # Specs
+    def create_specs(resource)
+      create_controller_spec(resource)
+      create_model_sepc(resource)
+      create_factories(resource)
+      create_routing_spec(resource)
+    end
+
+    def create_controller_spec(resource)
+      file_name = "#{resource['plural_name']}_controller_spec.rb"
+      resource['name_downcase'] = resource['name'].downcase
+
+      create_file_from_template(
+        resource,
+        File.join(base_template_path, 'spec', 'controller.erb'),
+        File.join(base_target_ps_path, 'spec', 'controllers', file_name)
+      ) do |field|
+        "#{field['name']}: #{faker(field, true)}"
+      end
+    end
+
+    def create_model_sepc(resource)
+      file_name = "#{resource['name'].downcase}.rb"
+
+      create_file_from_template(
+        resource,
+        File.join(base_template_path, 'spec', 'model.erb'),
+        File.join(base_target_ps_path, 'spec', 'models', file_name)
+      )
+    end
+
     def create_factories(resource)
       file_name = "#{resource['plural_name'].downcase}.rb"
 
@@ -91,17 +121,15 @@ module Generators
       end
     end
 
-    def create_controller_spec(resource)
-      file_name = "#{resource['plural_name']}_controller_spec.rb"
+    def create_routing_spec(resource)
+      file_name = "#{resource['plural_name']}_routing.rb"
       resource['name_downcase'] = resource['name'].downcase
 
       create_file_from_template(
         resource,
-        File.join(base_template_path, 'spec', 'controller.erb'),
-        File.join(base_target_ps_path, 'spec', 'controllers', file_name)
-      ) do |field|
-        "#{field['name']}: #{faker(field, true)}"
-      end
+        File.join(base_template_path, 'spec', 'routing.erb'),
+        File.join(base_target_ps_path, 'spec', 'routing', file_name)
+      )
     end
 
     def faker(field, factory_return_only_id=nil)

@@ -3,7 +3,7 @@
 module RailsAPI
   # Rails API Generator
   class Generator < ::BaseGenerator
-    BASE_TEMPLATE_PATH = './lib/templates/rails_api'
+    BASE_TEMPLATE_PATH = './lib/generators/rails_api/templates'
 
     def generate
       copy_project_basic_structure(File.join(BASE_TEMPLATE_PATH, 'project_structure'))

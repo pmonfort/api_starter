@@ -3,7 +3,7 @@
 module Sinatra
   # Basic Sinatra API Generator
   class Generator < ::BaseGenerator
-    BASE_TEMPLATE_PATH = './lib/templates/sinatra'
+    BASE_TEMPLATE_PATH = './lib/generators/sinatra/templates'
 
     def generate
       copy_project_basic_structure(File.join(BASE_TEMPLATE_PATH, 'project_structure'))

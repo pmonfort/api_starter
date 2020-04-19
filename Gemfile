@@ -13,7 +13,6 @@ gem 'sqlite3', '~> 1.3.6'
 
 group :test do
   gem 'byebug'
-  gem 'capybara'
   gem 'database_cleaner'
   gem 'rack-test'
   gem 'rspec'

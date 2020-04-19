@@ -1,0 +1,7 @@
+FactoryBot.define do
+  factory :<%= name.downcase %> do
+<% fields.each do |field| %>
+    <%= yield(field) %>
+<% end %>
+  end
+end

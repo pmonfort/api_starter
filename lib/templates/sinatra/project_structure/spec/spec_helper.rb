@@ -2,7 +2,7 @@
 
 ENV['SINATRA_ENV'] = 'test'
 
-require "./config/environment"
+require './config/environment'
 
 require 'database_cleaner'
 require 'factory_bot'

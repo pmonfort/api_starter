@@ -87,7 +87,7 @@ describe App do
 
       context 'framework Rails API' do
         it_behaves_like 'valid request' do
-          let(:generator) { Generators::RailsAPI }
+          let(:generator) { RailsAPI::Generator }
           let(:params) { valid_params }
         end
       end
@@ -95,7 +95,7 @@ describe App do
       context 'framework Sinatra' do
         let(:updated_params) { valid_params.merge({ framework: 'Sinatra' }) }
         it_behaves_like 'valid request' do
-          let(:generator) { Generators::Sinatra }
+          let(:generator) { Sinatra::Generator }
           let(:params) { updated_params }
         end
       end
@@ -103,7 +103,7 @@ describe App do
       context 'framework Rust' do
         let(:updated_params) { valid_params.merge({ framework: 'Rust' }) }
         it_behaves_like 'valid request' do
-          let(:generator) { Generators::Rust }
+          let(:generator) { Rust::Generator }
           let(:params) { updated_params }
         end
       end
@@ -111,7 +111,7 @@ describe App do
       context 'framework Elixir' do
         let(:updated_params) { valid_params.merge({ framework: 'Elixir' }) }
         it_behaves_like 'valid request' do
-          let(:generator) { Generators::Elixir }
+          let(:generator) { Elixir::Generator }
           let(:params) { updated_params }
         end
       end

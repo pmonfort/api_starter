@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-module Generators
+module RailsAPI
   # Rails API Generator
-  class RailsAPI < Base
+  class Generator < ::BaseGenerator
     BASE_TEMPLATE_PATH = './lib/templates/rails_api'
 
     def generate

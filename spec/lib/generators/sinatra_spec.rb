@@ -40,7 +40,7 @@ shared_examples 'generated file' do |type|
   end
 end
 
-describe Generators::Sinatra do
+describe Sinatra::Generator do
   let(:valid_params) do
     ActiveSupport::HashWithIndifferentAccess.new(
       {
@@ -155,7 +155,7 @@ describe Generators::Sinatra do
     )
   end
 
-  let!(:result_path) { Generators::Sinatra.new(valid_params).generate }
+  let!(:result_path) { Sinatra::Generator.new(valid_params).generate }
 
   context 'valid params' do
     describe 'controllers' do

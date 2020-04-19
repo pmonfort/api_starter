@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Generators
+module Rust
   # Rust API Generator
-  class Rust < Base
+  class Generator < ::BaseGenerator
   end
 end

@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require 'sinatra/base'
-require 'require_all'
-require_all './lib/generators'
-
 # APP
 class App < Sinatra::Base
   get '/' do
@@ -20,13 +16,13 @@ class App < Sinatra::Base
   def generator(framework)
     case framework
     when 'RailsAPI'
-      Generators::RailsAPI
+      RailsAPI::Generator
     when 'Sinatra'
-      Generators::Sinatra
+      Sinatra::Generator
     when 'Rust'
-      Generators::Rust
+      Rust::Generator
     when 'Elixir'
-      Generators::Elixir
+      Elixir::Generator
     end
   end
 end

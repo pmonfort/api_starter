@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Generators
+module Elixir
   # Elixir API Generator
-  class Elixir < Base
+  class Generator < ::BaseGenerator
   end
 end

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-module Generators
+module Sinatra
   # Basic Sinatra API Generator
-  class Sinatra < Base
+  class Generator < ::BaseGenerator
     BASE_TEMPLATE_PATH = './lib/templates/sinatra'
 
     def generate

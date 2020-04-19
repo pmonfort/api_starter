@@ -2,6 +2,7 @@
 
 module Rust
   # Rust API Generator
-  class Generator < ::BaseGenerator
+  class Generator
+    include GeneratorHelper
   end
 end

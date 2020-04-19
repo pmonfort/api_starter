@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
+require './lib/generators/ruby/base'
+
 module Ruby
   module RailsAPI
     # Rails API Generator
-    class Generator < ::BaseGenerator
+    class Generator < ::Ruby::Base
+      include GeneratorHelper
       BASE_TEMPLATE_PATH = './lib/generators/ruby/rails_api/templates'
 
       def generate

@@ -24,52 +24,102 @@ describe App do
             validation: 'true',
             resources: [
               {
-                name: 'User',
+                name: 'Company',
                 fields: [
-                  first_name: {
+                  {
+                    name: 'name',
                     type: 'string',
-                    required: 'false',
-                    unique: 'false'
-                  },
-                  last_name: {
-                    type: 'string',
-                    required: 'false',
-                    unique: 'false'
-                  },
-                  email: {
-                    type: 'email',
                     required: 'true',
+                    not_null: 'true',
                     unique: 'true'
                   },
-                  password: {
+                  {
+                    name: 'web_site',
+                    type: 'string',
+                    required: 'false',
+                    not_null: 'false',
+                    unique: 'false'
+                  }
+                ],
+                actions: %w[create update show]
+              },
+              {
+                name: 'User',
+                fields: [
+                  {
+                    name: 'first_name',
+                    type: 'string',
+                    required: 'false',
+                    not_null: 'false',
+                    unique: 'false'
+                  },
+                  {
+                    name: 'last_name',
+                    type: 'string',
+                    required: 'false',
+                    not_null: 'false',
+                    unique: 'false'
+                  },
+                  {
+                    name: 'email',
+                    type: 'email',
+                    required: 'true',
+                    not_null: 'true',
+                    unique: 'true'
+                  },
+                  {
+                    name: 'password',
                     type: 'password',
                     required: 'true',
-                    password: 'true'
+                    not_null: 'true',
+                    unique: 'false'
                   },
-                  age: {
+                  {
+                    name: 'age',
                     type: 'integer',
                     required: 'false',
-                    password: 'false'
+                    not_null: 'false',
+                    unique: 'false'
                   },
-                  company_id: {
+                  {
+                    name: 'birthday',
+                    type: 'datetime',
+                    required: 'true',
+                    not_null: 'true',
+                    unique: 'false'
+                  },
+                  {
+                    name: 'company_id',
                     type: 'foreign_key',
                     required: 'true',
-                    password: 'true'
+                    not_null: 'true',
+                    unique: 'false'
                   }
                 ],
                 actions: %w[create update delete show index]
               },
               {
-                name: 'Company',
+                name: 'Product',
                 fields: [
-                  name: {
+                  {
+                    name: 'name',
                     type: 'string',
                     required: 'true',
+                    not_null: 'true',
                     unique: 'true'
                   },
-                  web_site: {
-                    type: 'string',
+                  {
+                    name: 'price',
+                    type: 'price',
                     required: 'false',
+                    not_null: 'false',
+                    unique: 'false'
+                  },
+                  {
+                    name: 'first_day_on_market',
+                    type: 'datetime',
+                    required: 'false',
+                    not_null: 'true',
                     unique: 'false'
                   }
                 ],

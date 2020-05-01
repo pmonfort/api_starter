@@ -11,9 +11,9 @@ RSpec.describe <%= "API::#{plural_name.capitalize}Controller" %> do
   let(:valid_attributes) do
     build(:<%= name_downcase %>).attributes.slice(
       *%w[
-<% fields.map do |field| %>
+<%   fields.map do |field| %>
         <%= field['name'] %>
-<% end %>
+<%   end %>
       ]
     )
   end
@@ -71,7 +71,7 @@ RSpec.describe <%= "API::#{plural_name.capitalize}Controller" %> do
     end
 
     describe 'with invalid params' do
-<% required_fields.each_with_index do |field, index| %>
+<%   required_fields.each_with_index do |field, index| %>
       context 'missing required <%= field['name'].downcase %>' do
         it 'renders a JSON response with errors for the new <%= name_downcase %>' do
           post '<%= "/#{plural_name}" %>', {
@@ -81,10 +81,10 @@ RSpec.describe <%= "API::#{plural_name.capitalize}Controller" %> do
           expect(last_response.content_type).to eq('application/json')
         end
       end
-<% unless index == required_fields.size - 1 %>
+<%     unless index == required_fields.size - 1 %>
 
-<% end %>
-<% end %>
+<%     end %>
+<%   end %>
     end
   end
 
@@ -114,8 +114,8 @@ RSpec.describe <%= "API::#{plural_name.capitalize}Controller" %> do
     end
 
     describe 'with invalid params' do
-<% required_fields.each_with_index do |field, index| %>
-<% field_name = field['type'] == 'foreign_key' ? field['name'].gsub('_id', '') : field['name'] %>
+<%   required_fields.each_with_index do |field, index| %>
+<%     field_name = field['type'] == 'foreign_key' ? field['name'].gsub('_id', '') : field['name'] %>
       context 'with <%= field['name'].downcase %> set to nil' do
         it 'renders a JSON response with errors' do
           put "/<%= plural_name %>/#{<%= name_downcase %>.id}", {
@@ -123,24 +123,24 @@ RSpec.describe <%= "API::#{plural_name.capitalize}Controller" %> do
           }, session: valid_session
           error_messages = JSON.parse(last_response.body)['message']
           expect(last_response.status).to eq(400)
-<% if field['type'] == 'email' %>
+<%     if field['type'] == 'email' %>
           expect(error_messages.count).to eq(2)
-<% else %>
+<%     else %>
           expect(error_messages.count).to eq(1)
-<% end %>
+<%     end %>
           expect(error_messages[0]).to eq('<%= field_name.capitalize %> can\'t be blank')
           expect(last_response.content_type).to eq('application/json')
         end
       end
-<% unless index == required_fields.size - 1 %>
+<%     unless index == required_fields.size - 1 %>
 
-<% end %>
-<% end %>
+<%     end %>
+<%   end %>
     end
   end
-<% if actions.include?('delete') %>
+<%   if actions.include?('delete') %>
 
-<% end %>
+<%   end %>
 <% end %>
 <% if actions.include?('delete') %>
   describe 'DELETE <%= "/#{plural_name}/:id" %>' do

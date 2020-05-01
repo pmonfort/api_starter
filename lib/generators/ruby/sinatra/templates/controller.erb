@@ -18,9 +18,9 @@ module API
 <% end %>
 <% if actions.include?('create') %>
     post '<%= "/#{plural_name}" %>' do
-<% unless required_fields.empty? %>
+<%   unless required_fields.empty? %>
       <%= "required_params #{name_downcase}: %i[#{required_fields.map { |field| field['name'] }.join(' ')}]" %>
-<% end %>
+<%   end %>
       <%= "#{name_downcase} = #{name}.new(#{name.downcase}_params)" %>
       if <%= "#{name_downcase}.save" %>
         status 201
@@ -54,9 +54,9 @@ module API
     rescue
       halt 404
     end
-<% if actions & %w[create update] %>
+<%   if actions & %w[create update] %>
 
-<% end %>
+<%   end %>
 <% end %>
 <% if actions & %w[create update] %>
     def <%= name_downcase %>_params
